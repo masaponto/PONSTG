@@ -110,10 +110,16 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
     int helpX1,helpX2,helpY1,helpY2;
     Rect helpDst,helpDst2;
 
+    Bitmap playImage = BitmapFactory.decodeResource(res, R.drawable.play);
+    final Rect playSrc = new Rect(0,0,playImage.getWidth(),playImage.getHeight());
+    int playX1,playX2,playY1,playY2;
+    Rect playDst,playDst2;
+
     boolean helpPushFlag = false;
+    boolean playPushFlag = false;
     boolean helpFlag = false;
 
-    Typeface typeface;
+    //Typeface typeface;
 
     int scale;
 
@@ -134,6 +140,13 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
         helpDst = new Rect( helpX1, helpY1, helpX2, helpY2);
         helpDst2 = new Rect( helpX1, helpY1 + displayX/100, helpX2, helpY2 + displayX/100);
 
+        playX1 = displayX*2/3 - displayX*1/4;
+        playY1 = displayY*2/3;
+        playX2 = displayX*2/3;
+        playY2 = displayY*2/3 + displayX*1/4;
+        playDst = new Rect( playX1, playY1, playX2, playY2);
+        playDst2 = new Rect( playX1, playY1 + displayX/100, playX2, playY2 + displayX/100);
+
         //typeface = Typeface.createFromAsset(getContext().getAssets(), "Pigmo-00_pilot.ttf");
 
         setFocusable(true);
@@ -148,29 +161,36 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
 
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
 
-            if (helpX1 < x && x < helpX2 && helpY1< y && y < helpY2) {
-                helpPushFlag = true;
-            }
-
-            else {
-                if (!helpFlag) {
-                    Intent mainIntent = new Intent(getContext(), MainActivity.class);
-                    isRunning = false;
-                    mContext.startActivity(mainIntent);
+            if(!helpFlag) {
+                if(helpX1 < x && x < helpX2 && helpY1 < y && y < helpY2){
+                    helpPushFlag = true;
+                }
+                if(playX1 < x && x < playX2 && playY1 < y && y < playY2){
+                    playPushFlag = true;
                 }
             }
 
         }
 
         if(event.getAction() == MotionEvent.ACTION_UP){
-            helpPushFlag = false;
 
-            if (helpFlag){
+            helpPushFlag = false;
+            playPushFlag = false;
+
+            if(helpFlag){
                 helpFlag = false;
             }
 
-            if (!helpFlag && helpX1 < x && x < helpX2 && helpY1< y && y < helpY2) {
-                helpFlag = true;
+            else{
+                if(helpX1 < x && x < helpX2 && helpY1 < y && y < helpY2){
+                    helpFlag = true;
+                }
+
+                if(playX1 < x && x < playX2 && playY1 < y && y < playY2){
+                    Intent mainIntent = new Intent(getContext(), MainActivity.class);
+                    isRunning = false;
+                    mContext.startActivity(mainIntent);
+                }
             }
 
 
@@ -230,12 +250,12 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
             mPaint.setTextSize(40 * scale);
             canvas.drawText("THIS IS HELP",displayX/4,displayY/4, mPaint);
             mPaint.setTextSize(30 * scale);
-            /*canvas.drawText("Just Touch! HAHAHA!",displayX/4,displayY/4 + 40, mPaint);
-            canvas.drawText("Have fun !!",displayX/4,displayY/4 + 80 ,mPaint);
-            canvas.drawText("Tap to continue!!",displayX/4,displayY/4 + 120 ,mPaint);*/
+            canvas.drawText("Just Touch! HAHAHA!",displayX/4,displayY/4 + 40 * scale, mPaint);
+            canvas.drawText("Have fun !!",displayX/4,displayY/4 + 80 * scale,mPaint);
+            canvas.drawText("Tap to continue!!",displayX/4,displayY/4 + 120 * scale,mPaint);
         }
 
-        if(!helpFlag) {
+        else{
 
             if(helpPushFlag){
                 canvas.drawBitmap(helpImage, helpSrc, helpDst2, mPaint);
@@ -243,14 +263,16 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
                 canvas.drawBitmap(helpImage, helpSrc, helpDst, mPaint);
             }
 
+            if(playPushFlag){
+                canvas.drawBitmap(playImage, playSrc, playDst2, mPaint);
+            }else{
+                canvas.drawBitmap(playImage, playSrc, playDst, mPaint);
+            }
+
             mPaint.setTextSize(50 * scale);
             canvas.drawText("PON",displayX*1/4, displayY*1/3 - 52 * scale, mPaint);
             canvas.drawText("SHOOTING",displayX*1/4, displayY*1/3, mPaint);
             mPaint.setTextSize(30 * scale);
-
-            if(count % 80 < 40){
-                canvas.drawText("Tap to Start",displayX* 1/4,displayY*1/3 + 60 * scale, mPaint);
-            }
 
         }
 
