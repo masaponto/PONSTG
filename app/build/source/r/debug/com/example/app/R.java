@@ -931,7 +931,12 @@ containing a value of this type.
         public static final int chara=0x7f020058;
         public static final int enemy=0x7f020059;
         public static final int explotion=0x7f02005a;
-        public static final int ic_launcher=0x7f02005b;
+        public static final int help=0x7f02005b;
+        public static final int home=0x7f02005c;
+        public static final int ic_launcher=0x7f02005d;
+        public static final int pause=0x7f02005e;
+        public static final int play=0x7f02005f;
+        public static final int retry=0x7f020060;
     }
     public static final class id {
         public static final int action_bar=0x7f08001c;
