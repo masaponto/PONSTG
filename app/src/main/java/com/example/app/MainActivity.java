@@ -557,7 +557,7 @@ class Chara
         this.w = w;
         this.h = h;
         this.scale = scale;
-        charaSpeed = 15 * scale;
+        charaSpeed = 10 * scale;
     }
 
     private void init(int w, int h){
