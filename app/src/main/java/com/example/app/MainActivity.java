@@ -238,6 +238,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
                 if(pauseX1 < touchX && touchX < pauseX2 && pauseY1< touchY && touchY < pauseY2){
                     pausePushFlag = true;
+                    playPushFlag = true;
                 }
                 else{
 
@@ -265,14 +266,15 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
             if(action == MotionEvent.ACTION_UP){
                 pausePushFlag = false;
+                playPushFlag = false;
 
                 if(pauseFlag){
-                    if (pauseX1 < touchX && touchX < pauseX2 && pauseY1 < touchY && touchY < pauseY2) {
+                    if (pauseX1 < touchX2 && touchX2 < pauseX2 && pauseY1 < touchY2 && touchY2 < pauseY2) {
                         pauseFlag = false;
                     }
                 }
                 else {
-                    if (pauseX1 < touchX && touchX < pauseX2 && pauseY1 < touchY && touchY < pauseY2) {
+                    if (pauseX1 < touchX2 && touchX2 < pauseX2 && pauseY1 < touchY2 && touchY2 < pauseY2) {
                         pauseFlag = true;
                     }
                 }
