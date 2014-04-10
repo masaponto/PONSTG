@@ -252,10 +252,10 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
        // mPaint.setTypeface(typeface);
         mPaint.setColor(Color .BLACK);
 
-        mPaint.setTextSize(50 * scale);
-        canvas.drawText("GameOver", displayX/4, displayY/2 - 60 * scale, mPaint);
+        mPaint.setTextSize(60 * scale);
+        canvas.drawText("GameOver", displayX/4, displayY/2 - 70 * scale, mPaint);
 
-        mPaint.setTextSize(30 * scale);
+        mPaint.setTextSize(40 * scale);
         canvas.drawText("SCORE:" + score, displayX/4 , displayY/2, mPaint);
 
         if(homePushFlag){
