@@ -937,6 +937,7 @@ containing a value of this type.
         public static final int pause=0x7f02005e;
         public static final int play=0x7f02005f;
         public static final int retry=0x7f020060;
+        public static final int twit=0x7f020061;
     }
     public static final class id {
         public static final int action_bar=0x7f08001c;

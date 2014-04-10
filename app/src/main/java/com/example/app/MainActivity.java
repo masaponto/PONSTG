@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MainActivity extends Activity
 {
@@ -143,6 +144,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
     //画像
     Bitmap charaImage = BitmapFactory.decodeResource(res, R.drawable.chara);
+
     Bitmap charaBeamImage = BitmapFactory.decodeResource(res, R.drawable.beam);
     Bitmap enemyImage = BitmapFactory.decodeResource(res,R.drawable.enemy);
     Bitmap explotionImage = BitmapFactory.decodeResource(res,R.drawable.explotion);
@@ -196,7 +198,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
     public void surfaceCreated(SurfaceHolder holder){
 
-        chara = new Chara(charaImage,displayX,displayY * 2/3, scale);
+        chara = new Chara(charaImage,displayX,displayY, scale);
 
         charaBeam = new CharaBeam[N];
         for(int i = 0; i < N; i++){
@@ -296,7 +298,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         final int explotionSpeed = 5;
 
         final int enemyR = enemyImage.getWidth()/2;
-        final int charaR = charaImage.getWidth()/2;
+        final int charaR = displayX/11;
 
         boolean overFlag = false;
 
@@ -316,7 +318,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
                         if (count % (60 / scale) == 0) {
                             Random rnd = new Random();
-                            int ran = rnd.nextInt(displayX - 2 * charaImage.getWidth()) + charaImage.getWidth() / 2;
+                            int ran = rnd.nextInt(displayX - 2 * displayX/11) + (displayX/11) / 2;
 
                             enemys.add(new Enemy(enemyImage, ran, 0, scale));
                         }
@@ -494,7 +496,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
         for(int i = 0; i < N; i++){
             charaBeam[i].drawMove(canvas, chara.getCenterX() - charaBeamImage.getWidth() / 2
-                    , chara.getCenterY() - charaImage.getHeight()/2 + charaBeamImage.getHeight());
+                    , chara.getCenterY() - (displayX/11)/2 + charaBeamImage.getHeight());
         }
 
         if(!hitFlag){
@@ -542,6 +544,7 @@ class Chara
 {
 
     private Bitmap charaImage;
+    private Rect charaSrc, charaDst;
     private Point p;
 
     int charaSpeed;
@@ -559,27 +562,29 @@ class Chara
         this.w = w;
         this.h = h;
         this.scale = scale;
-        charaSpeed = 10 * scale;
+        charaSpeed = 12 * scale;
     }
 
     private void init(int w, int h){
-        p.x = w/2 - charaImage.getWidth()/2;
-        p.y = h - charaImage.getHeight()*4;
+        p.x = w/2 - (w/11)/2;
+        p.y = h*2/3 - (h/10);
+        charaSrc = new Rect(0,0,charaImage.getWidth(),charaImage.getHeight());
+        charaDst = new Rect(p.x,p.y,p.x+w/11,p.y+h/10);
     }
 
     public void move(int x, int y){
 
-        if(x < p.x + charaImage.getWidth() / 2){
+        if(x < p.x + (w/11) / 2){
             p.x -= charaSpeed;
         }
-        if(x > p.x + charaImage.getWidth() / 2){
+        if(x > p.x + (w/11) / 2){
             p.x += charaSpeed;
         }
 
-        if(y < p.y + charaImage.getHeight() / 2){
+        if(y < p.y + (h/10) / 2){
             p.y -= charaSpeed;
         }
-        if(y > p.y + charaImage.getHeight() / 2){
+        if(y > p.y + (h/10) / 2){
             p.y += charaSpeed;
         }
 
@@ -587,29 +592,30 @@ class Chara
         if(p.x < 0){
             p.x = 0;
         }
-        if(p.x + charaImage.getWidth() > w){
-            p.x = w - charaImage.getWidth();
+        if(p.x + (w/11) > w){
+            p.x = w - (w/11);
         }
         if(p.y < 0){
             p.y = 0;
         }
-        if(p.y + charaImage.getHeight() > h){
-            p.y = h - charaImage.getHeight();
+        if(p.y + (h/10) > h*2/3){
+            p.y = h*2/3 - h/10;
         }
 
+        charaDst = new Rect(p.x,p.y,p.x+w/11,p.y+h/10);
 
     }
 
     public int getCenterX(){
-        return p.x + charaImage.getWidth()/2;
+        return p.x + (w/11)/2;
     }
 
     public int getCenterY(){
-        return p.y + charaImage.getHeight()/2;
+        return p.y + (h/10)/2;
     }
 
     public void drawMove(Canvas c){
-        c.drawBitmap(charaImage, p.x, p.y, new Paint());
+        c.drawBitmap(charaImage, charaSrc, charaDst, new Paint());
     }
 
 }
