@@ -107,8 +107,14 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
     int retryX1,retryX2,retryY1,retryY2;
     Rect retryDst,retryDst2;
 
+    Bitmap twitImage = BitmapFactory.decodeResource(res,R.drawable.twit);
+    final Rect twitSrc = new Rect(0,0,twitImage.getWidth(),twitImage.getHeight());
+    int twitX1,twitX2,twitY1,twitY2;
+    Rect twitDst,twitDst2;
+
     boolean homePushFlag = false;
     boolean retryPushFlag = false;
+    boolean twitPushFlag = false;
 
     int scale;
 
@@ -124,20 +130,26 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
 
         scale = displayX / 480;
 
-        homeX1 = displayX*1/3 - displayX*1/4;
+        homeX1 = displayX/16;
         homeY1 = displayY*2/3;
-        homeX2 = displayX*1/3;
+        homeX2 = displayX*5/16;
         homeY2 = displayY*2/3 + displayX*1/4;
         homeDst = new Rect( homeX1, homeY1, homeX2, homeY2);
         homeDst2 = new Rect( homeX1, homeY1 + displayX/100, homeX2, homeY2 + displayX/100);
 
-        retryX1 = displayX*2/3 - displayX*1/4;
+        retryX1 = displayX*6/16;
         retryY1 = displayY*2/3;
-        retryX2 = displayX*2/3;
+        retryX2 = displayX*10/16;
         retryY2 = displayY*2/3 + displayX*1/4;
         retryDst = new Rect( retryX1, retryY1, retryX2, retryY2);
         retryDst2 = new Rect( retryX1, retryY1 + displayX/100, retryX2, retryY2 + displayX/100);
 
+        twitX1 = displayX*11/16;
+        twitY1 = displayY*2/3;
+        twitX2 = displayX*15/16;
+        twitY2 = displayY*2/3 + displayX*1/4;
+        twitDst = new Rect( twitX1, twitY1, twitX2, twitY2);
+        twitDst2 = new Rect( twitX1, twitY1 + displayX/100, twitX2, twitY2 + displayX/100);
 
       //  typeface = Typeface.createFromAsset(getContext().getAssets(), "Pigmo-00_pilot.ttf");
 
@@ -153,13 +165,18 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
 
         if(event.getAction() == MotionEvent.ACTION_DOWN){
 
-            if(homeX1 < x && x < homeX2 && homeY1< y && y < homeY2){
+            if(homeX1 < x && x < homeX2 && homeY1 < y && y < homeY2){
                 homePushFlag = true;
             }
 
-            if(retryX1 < x && x < retryX2 && retryY1< y && y < retryY2){
+            if(retryX1 < x && x < retryX2 && retryY1 < y && y < retryY2){
                 retryPushFlag = true;
             }
+
+            if(twitX1 < x && x < twitX2 && twitY1 < y && y < twitY2){
+                twitPushFlag = true;
+            }
+
 
             //Log.v("tag", "y:" + y + "x:" + x + " homeR:" + homeR + " distance:" + homeDistance);
 
@@ -169,6 +186,7 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
 
             homePushFlag = false;
             retryPushFlag = false;
+            twitPushFlag = false;
 
             if(homeX1 < x && x < homeX2 && homeY1< y && y < homeY2){
                 Intent title = new Intent(getContext(),TitleActivity.class);
@@ -182,6 +200,10 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
                 isRunning = false;
                 //thread = null;
                 mContext.startActivity(mainIntent);
+            }
+
+            if(twitX1 < x && x < twitX2 && twitY1< y && y < twitY2){
+
             }
         }
 
@@ -247,6 +269,13 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
         }else{
             canvas.drawBitmap(retryImage, retrySrc, retryDst, mPaint);
         }
+
+        if(twitPushFlag){
+            canvas.drawBitmap(twitImage, twitSrc, twitDst2, mPaint);
+        }else{
+            canvas.drawBitmap(twitImage, twitSrc, twitDst, mPaint);
+        }
+
 
         mPaint.setTextSize(30 * scale);
         mPaint.setColor(Color .BLACK);
