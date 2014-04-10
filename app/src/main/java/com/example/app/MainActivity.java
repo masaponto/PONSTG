@@ -104,7 +104,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     private Chara chara;
 
     //ビームの数
-    final int N = 3;
+    final int N = 5;
 
     //ビーム発射ループ用カウンタ
     int beamCount = 0;
@@ -144,7 +144,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
     //画像
     Bitmap charaImage = BitmapFactory.decodeResource(res, R.drawable.chara);
-
     Bitmap charaBeamImage = BitmapFactory.decodeResource(res, R.drawable.beam);
     Bitmap enemyImage = BitmapFactory.decodeResource(res,R.drawable.enemy);
     Bitmap explotionImage = BitmapFactory.decodeResource(res,R.drawable.explotion);
@@ -515,9 +514,9 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
             }
         }else {
             if (pausePushFlag) {
-                canvas.drawBitmap(pauseImage, pauseSrc, pauseDst2, mPaint);
+                canvas.drawBitmap(pauseImage, playSrc, pauseDst2, mPaint);
             } else {
-                canvas.drawBitmap(pauseImage, pauseSrc, pauseDst, mPaint);
+                canvas.drawBitmap(pauseImage, playSrc, pauseDst, mPaint);
             }
         }
 
@@ -567,9 +566,9 @@ class Chara
 
     private void init(int w, int h){
         p.x = w/2 - (w/11)/2;
-        p.y = h*2/3 - (h/10);
+        p.y = h*2/3 - (h/10)*3;
         charaSrc = new Rect(0,0,charaImage.getWidth(),charaImage.getHeight());
-        charaDst = new Rect(p.x,p.y,p.x+w/11,p.y+h/10);
+        charaDst = new Rect(p.x,p.y,p.x+w/11,p.y+h/11);
     }
 
     public void move(int x, int y){
@@ -581,10 +580,10 @@ class Chara
             p.x += charaSpeed;
         }
 
-        if(y < p.y + (h/10) / 2){
+        if(y < p.y + (h/11) / 2){
             p.y -= charaSpeed;
         }
-        if(y > p.y + (h/10) / 2){
+        if(y > p.y + (h/11) / 2){
             p.y += charaSpeed;
         }
 
@@ -598,11 +597,11 @@ class Chara
         if(p.y < 0){
             p.y = 0;
         }
-        if(p.y + (h/10) > h*2/3){
-            p.y = h*2/3 - h/10;
+        if(p.y + (h/11) > h*2/3){
+            p.y = h*2/3 - h/11;
         }
 
-        charaDst = new Rect(p.x,p.y,p.x+w/11,p.y+h/10);
+        charaDst = new Rect(p.x,p.y,p.x+w/11,p.y+h/11);
 
     }
 
@@ -611,7 +610,7 @@ class Chara
     }
 
     public int getCenterY(){
-        return p.y + (h/10)/2;
+        return p.y + (h/11)/2;
     }
 
     public void drawMove(Canvas c){
