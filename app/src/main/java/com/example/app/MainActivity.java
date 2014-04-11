@@ -144,8 +144,8 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
     //画像
     Bitmap charaImage = BitmapFactory.decodeResource(res, R.drawable.chara);
-    Bitmap charaBeamImage = BitmapFactory.decodeResource(res, R.drawable.beam);
     Bitmap enemyImage = BitmapFactory.decodeResource(res,R.drawable.enemy);
+
     Bitmap explotionImage = BitmapFactory.decodeResource(res,R.drawable.explotion);
 
     Bitmap pauseImage = BitmapFactory.decodeResource(res,R.drawable.pause);
@@ -157,7 +157,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     Bitmap playImage = BitmapFactory.decodeResource(res, R.drawable.play);
     final Rect playSrc = new Rect(0,0,playImage.getWidth(),playImage.getHeight());
     boolean playPushFlag = false;
-
 
 
     SoundPool sp = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
@@ -201,7 +200,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
         charaBeam = new CharaBeam[N];
         for(int i = 0; i < N; i++){
-            charaBeam[i] = new CharaBeam(charaBeamImage, scale);
+            charaBeam[i] = new CharaBeam(displayX, scale);
         }
 
         isRunning = true;
@@ -296,7 +295,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
         final int explotionSpeed = 5;
 
-        final int enemyR = enemyImage.getWidth()/2;
+        final int enemyR = displayX/11;
         final int charaR = displayX/11;
 
         boolean overFlag = false;
@@ -305,8 +304,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         while(isRunning){
 
             Canvas canvas = getHolder().lockCanvas();
-
-            //count++;
 
             if(canvas != null) {
 
@@ -319,15 +316,15 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                             Random rnd = new Random();
                             int ran = rnd.nextInt(displayX - 2 * displayX/11) + (displayX/11) / 2;
 
-                            enemys.add(new Enemy(enemyImage, ran, 0, scale));
+                            enemys.add(new Enemy(enemyImage, ran, 0, displayX, displayY,scale));
                         }
 
 
                         if (count % 100 == 0 && !enemys.isEmpty()) {
 
                             for (int i = 0; i < enemys.size(); i++) {
-                                enemyBeams.add(new EnemyBeam(charaBeamImage, enemys.get(i).getCenterX() - charaBeamImage.getWidth() / 2
-                                        , enemys.get(i).getCenterY(), chara.getCenterX(), chara.getCenterY(),scale));
+                                enemyBeams.add(new EnemyBeam(enemys.get(i).getCenterX() - (displayX/80) / 2
+                                        , enemys.get(i).getCenterY(), chara.getCenterX(), chara.getCenterY(), displayX, scale));
                             }
 
                         }
@@ -494,8 +491,8 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         }
 
         for(int i = 0; i < N; i++){
-            charaBeam[i].drawMove(canvas, chara.getCenterX() - charaBeamImage.getWidth() / 2
-                    , chara.getCenterY() - (displayX/11)/2 + charaBeamImage.getHeight());
+            charaBeam[i].drawMove(canvas, chara.getCenterX() - charaBeam[i].getRadius() / 2
+                    , chara.getCenterY() - (displayX/11)/2 + charaBeam[i].getRadius());
         }
 
         if(!hitFlag){
@@ -623,7 +620,6 @@ class Chara
 class CharaBeam
 {
 
-    private Bitmap charaBeamImage;
     private Point p;
     private int beamCenterX;
     private int beamCenterY;
@@ -632,22 +628,24 @@ class CharaBeam
     boolean isDead = true;
 
     private int scale;
+    private int radius, displayX;
 
-    CharaBeam(Bitmap charaBeamImage,int scale){
-        this.charaBeamImage = charaBeamImage;
+    CharaBeam(int displayX,int scale){
         p = new Point();
+        this.displayX = displayX;
         this.scale = scale;
     }
 
     private void init(int w, int h){
         p.x = w;
         p.y = h;
+        radius = displayX/80;
     }
 
     public void move(){
         p.y -= 5 * scale;
-        beamCenterX = p.x + charaBeamImage.getWidth()/2;
-        beamCenterY = p.y + charaBeamImage.getHeight()/2;
+        beamCenterX = p.x + radius/2;
+        beamCenterY = p.y + radius/2;
 
         if(p.y < 0){
             isDead = true;
@@ -659,7 +657,10 @@ class CharaBeam
         if(isDead){
             init(w,h);
         }
-        c.drawBitmap(charaBeamImage, p.x, p.y, new Paint());
+
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        c.drawCircle(p.x, p.y,radius, paint);
     }
 
     public int getCenterX(){
@@ -668,6 +669,8 @@ class CharaBeam
     public int getCenterY(){
         return beamCenterY;
     }
+    public int getRadius() {return radius;}
+
 
 }
 
@@ -676,31 +679,40 @@ class Enemy
 {
 
     private Bitmap enemyImage;
+    private Rect enemySrc, enemyDst;
     private Point p;
 
     private int enemyCenterX;
     private int enemyCenterY;
+    private int displayX, displayY;
 
     double hitDistance;
 
     private int scale;
 
-    Enemy(Bitmap enemyImage, int w, int h, int scale){
+    Enemy(Bitmap enemyImage, int w, int h, int displayX, int displayY, int scale){
         this.enemyImage = enemyImage;
         p = new Point();
         p.x = w;
         p.y = h;
         this.scale = scale;
+        this.displayX = displayX;
+        this.displayY = displayY;
+        enemySrc = new Rect(0,0,enemyImage.getWidth(),enemyImage.getHeight());
+        enemyDst = new Rect(p.x,p.y,p.x+w/11,p.y+w/11);
     }
 
     public void move(){
+        //displayX 480 displayY800
         p.y += 4 * scale;
-        enemyCenterX = p.x + enemyImage.getWidth()/2;
-        enemyCenterY = p.y + enemyImage.getHeight()/2;
+        enemyCenterX = p.x + (displayX/11)/2;
+        enemyCenterY = p.y + (displayY/11)/2;
+        enemyDst = new Rect(p.x,p.y,p.x+displayX/11,p.y+displayX/11);
+        //Log.d("hoge","displayX" + displayX + "displayY" + displayY);
     }
 
     public void drawMove(Canvas c){
-        c.drawBitmap(enemyImage, p.x, p.y, new Paint());
+        c.drawBitmap(enemyImage, enemySrc, enemyDst, new Paint());
     }
 
     public int getX(){
@@ -723,31 +735,32 @@ class Enemy
 class EnemyBeam
 {
 
-    private Bitmap enemyBeamImage;
     private Point p;
     private int beamCenterX;
     private int beamCenterY;
     private double angle;
-    private int scale;
+    private int scale, radius;
 
-    EnemyBeam(Bitmap enemyBeamImage , int w, int h,int charaX,int charaY, int scale){
-        this.enemyBeamImage = enemyBeamImage;
+    EnemyBeam(int w, int h,int charaX,int charaY, int displayX, int scale){
         p = new Point();
         p.x = w;
         p.y = h;
         angle = Math.atan2(charaY - h, charaX - w);
         this.scale = scale;
+        radius = displayX/80;
     }
 
     public void move(){
         p.x += Math.cos(angle) * 4 * scale;
         p.y += Math.sin(angle) * 4 * scale;
-        beamCenterX = p.x + enemyBeamImage.getWidth()/2;
-        beamCenterY = p.y + enemyBeamImage.getHeight()/2;
+        beamCenterX = p.x + radius/2;
+        beamCenterY = p.y + radius/2;
     }
 
     public void drawMove(Canvas c) {
-        c.drawBitmap(enemyBeamImage, p.x, p.y, new Paint());
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        c.drawCircle(p.x, p.y,radius, paint);
     }
 
     public int getX(){
@@ -801,7 +814,6 @@ class Explotion
     }
 
     public void drawMove(Canvas c){
-        //Log.d("aa"," x " + dispX + " y " + dispY);
         c.drawBitmap(explotionImage, srcs[exSwitch], dst, new Paint());
     }
 
