@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -203,7 +204,17 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
             }
 
             if(twitX1 < x && x < twitX2 && twitY1< y && y < twitY2){
-
+                try{
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    //intent.setClassName("com.twitter.android","com.twitter.android.PostActivity");
+                    intent.putExtra(Intent.EXTRA_TEXT, "PLAYED PON-SHOOTING!\nSCORE:" + score + " #PON_SHOOTING");
+                    intent.setType("text/plain");
+                    mContext.startActivity(intent);
+                }catch(Exception e){
+                    Uri uri = Uri.parse("market://search?q=com.twitter.android");
+                    Intent marketIntent=new Intent(Intent.ACTION_VIEW,uri);
+                    mContext.startActivity(marketIntent);
+                }
             }
         }
 
@@ -253,7 +264,7 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
         mPaint.setColor(Color .BLACK);
 
         mPaint.setTextSize(60 * scale);
-        canvas.drawText("GameOver", displayX/4, displayY/2 - 70 * scale, mPaint);
+        canvas.drawText("GameOver", displayX/5, displayY/2 - 70 * scale, mPaint);
 
         mPaint.setTextSize(40 * scale);
         canvas.drawText("SCORE:" + score, displayX/4 , displayY/2, mPaint);
