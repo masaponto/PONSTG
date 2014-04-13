@@ -276,6 +276,51 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 else {
                     if (pauseX1 < touchX2 && touchX2 < pauseX2 && pauseY1 < touchY2 && touchY2 < pauseY2) {
                         pauseFlag = true;
+
+                        AlertDialog.Builder alertDialog=new AlertDialog.Builder(mContext);
+
+                        // ダイアログの設定
+                        alertDialog.setTitle("Paused");      //タイトル設定
+                        //alertDialog.setMessage("massage");  //内容(メッセージ)設定
+
+                        // OK(肯定的な)ボタンの設定
+                        alertDialog.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // OKボタン押下時の処理
+                                Log.d("AlertDialog", "Positive which :" + which);
+                                Intent title = new Intent(getContext(),TitleActivity.class);
+                                isRunning = false;
+                                //thread = null;
+                                mContext.startActivity(title);
+                            }
+                        });
+
+                        // SKIP(中立的な)ボタンの設定
+                        alertDialog.setNeutralButton("Resume", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // SKIPボタン押下時の処理
+                                //Log.d("AlertDialog", "Neutral which :" + which);
+                                pauseFlag = false;
+                            }
+                        });
+
+                        // NG(否定的な)ボタンの設定
+                        alertDialog.setNegativeButton("Restart", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // NGボタン押下時の処理
+                                Log.d("AlertDialog", "Negative which :" + which);
+                                Intent mainIntent = new Intent(getContext(),MainActivity.class);
+                                isRunning = false;
+                                //thread = null;
+                                mContext.startActivity(mainIntent);
+                            }
+                        });
+
+                        // ダイアログの作成と描画
+//        alertDialog.create();
+                        alertDialog.show();
+
+
                     }
                 }
             }
@@ -314,7 +359,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
                         if (count % (60 / scale) == 0) {
                             Random rnd = new Random();
-                            int ran = rnd.nextInt(displayX - 2 * displayX/11) + (displayX/11) / 2;
+                            int ran = rnd.nextInt(displayX - 2 * (displayX/11)) + (displayX/11) / 2;
 
                             enemys.add(new Enemy(enemyImage, ran, 0, displayX, displayY,scale));
                         }
@@ -531,6 +576,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         gameOver.putExtra("score", score);
         mContext.startActivity(gameOver);
     }
+
 
 
 }
