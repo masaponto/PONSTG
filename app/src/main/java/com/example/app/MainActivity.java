@@ -196,7 +196,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
     public void surfaceCreated(SurfaceHolder holder){
 
-        chara = new Chara(charaImage,displayX,displayY, scale);
+        chara = new Chara(charaImage, displayX, displayY, displayX/11, displayY/11, scale);
 
         charaBeam = new CharaBeam[N];
         for(int i = 0; i < N; i++){
@@ -241,7 +241,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                     playPushFlag = true;
                 }
                 else{
-
                     if(!pauseFlag){
                         //beamを出す
                         if (!charaBeam[beamCount].CharaBeamFlag) {
@@ -281,7 +280,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
                         // ダイアログの設定
                         alertDialog.setTitle("Paused");      //タイトル設定
-                        //alertDialog.setMessage("massage");  //内容(メッセージ)設定
 
                         // OK(肯定的な)ボタンの設定
                         alertDialog.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
@@ -299,7 +297,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                         alertDialog.setNeutralButton("Resume", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // SKIPボタン押下時の処理
-                                //Log.d("AlertDialog", "Neutral which :" + which);
+                                Log.d("AlertDialog", "Neutral which :" + which);
                                 pauseFlag = false;
                             }
                         });
@@ -352,46 +350,43 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
             if(canvas != null) {
 
-                if (!pauseFlag) {
+                if(!pauseFlag) {
                     count++;
 
-                    if (!hitFlag) {
+                    if(!hitFlag) {
 
-                        if (count % (60 / scale) == 0) {
+
+                        if(count % (60 / scale) == 0) {
                             Random rnd = new Random();
-                            int ran = rnd.nextInt(displayX - 2 * (displayX/11)) + (displayX/11) / 2;
-
-                            enemys.add(new Enemy(enemyImage, ran, 0, displayX, displayY,scale));
+                            //int ran = rnd.nextInt(displayX - 2 * (displayX/11)) + (displayX/11) / 2;
+                            int ran = rnd.nextInt(displayX - (displayX/11));
+                            enemys.add(new Enemy(enemyImage, ran, 0, displayX, displayY, displayX/11, displayX/11, scale));
                         }
 
-
-                        if (count % 100 == 0 && !enemys.isEmpty()) {
-
-                            for (int i = 0; i < enemys.size(); i++) {
+                        if(count % 100 == 0 && !enemys.isEmpty()) {
+                            for(int i = 0; i < enemys.size(); i++) {
                                 enemyBeams.add(new EnemyBeam(enemys.get(i).getCenterX() - (displayX/80) / 2
                                         , enemys.get(i).getCenterY(), chara.getCenterX(), chara.getCenterY(), displayX, scale));
                             }
-
                         }
 
                     }
 
-                    for (int i = 0; i < enemys.size(); i++) {
+                    for(int i = 0; i < enemys.size(); i++){
 
-                        if (!hitFlag) {
+                        if(!hitFlag) {
                             enemys.get(i).move();
                         }
 
                         //画面外に出たらリストから消す
-                        if (enemys.get(i).getY() > displayY * 2 / 3) {
+                        if(enemys.get(i).getY() > displayY * 2/3){
                             enemys.remove(i);
                         }
-
 
                         chara.hitDistance1 = (int) Math.sqrt(Math.pow(chara.getCenterX() - enemys.get(i).getCenterX(), 2)
                                 + Math.pow(chara.getCenterY() - enemys.get(i).getCenterY(), 2));
 
-                        if (chara.hitDistance1 < charaR) {
+                        if(chara.hitDistance1 < charaR){
 
                             hitFlag = true;
 
@@ -525,7 +520,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
         canvas.drawColor(Color.WHITE);
         mPaint.setColor(Color.WHITE);
-        //mPaint.setTypeface(typeface);
 
         for(int i = 0; i < enemyBeams.size(); i++){
             enemyBeams.get(i).drawMove(canvas);
@@ -588,76 +582,70 @@ class Chara
     private Bitmap charaImage;
     private Rect charaSrc, charaDst;
     private Point p;
-
-    int charaSpeed;
+    private Paint paint;
 
     int hitDistance1, hitDistance2;
 
-    int w,h;
+    private int displayX,displayY;
 
-    int scale;
+    private int scale;
+    private int sizeX, sizeY;
 
-    Chara(Bitmap charaImage, int w, int h, int scale){
+    Chara(Bitmap charaImage, int displayX, int displayY,int sizeX, int sizeY,int scale){
         this.charaImage = charaImage;
-        p = new Point();
-        init(w,h);
-        this.w = w;
-        this.h = h;
+        this.displayX = displayX;
+        this.displayY = displayY;
         this.scale = scale;
-        charaSpeed = 12 * scale;
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
+
+
+        p = new Point();
+        paint = new Paint();
+        charaSrc = new Rect(0,0,charaImage.getWidth(),charaImage.getHeight());
+
+        init(displayX,displayY);
     }
 
-    private void init(int w, int h){
-        p.x = w/2 - (w/11)/2;
-        p.y = h*2/3 - (h/10)*3;
-        charaSrc = new Rect(0,0,charaImage.getWidth(),charaImage.getHeight());
-        charaDst = new Rect(p.x,p.y,p.x+w/11,p.y+h/11);
+    private void init(int displayX, int displayY){
+        p.x = displayX/2 - (sizeX)/2;
+        p.y = displayY*2/3 - (sizeY)*3;
+        charaDst = new Rect(p.x,p.y,p.x+sizeX,p.y+sizeY);
     }
 
     public void move(int x, int y){
 
-        if(x < p.x + (w/11) / 2){
-            p.x -= charaSpeed;
-        }
-        if(x > p.x + (w/11) / 2){
-            p.x += charaSpeed;
-        }
-
-        if(y < p.y + (h/11) / 2){
-            p.y -= charaSpeed;
-        }
-        if(y > p.y + (h/11) / 2){
-            p.y += charaSpeed;
-        }
+        p.x = x - (sizeX)/2;
+        p.y = y - (sizeY)/2;
 
         //画面外のでないように処理
         if(p.x < 0){
             p.x = 0;
         }
-        if(p.x + (w/11) > w){
-            p.x = w - (w/11);
+        if(p.x + (sizeX) > displayX){
+            p.x = displayX - (sizeX);
         }
         if(p.y < 0){
             p.y = 0;
         }
-        if(p.y + (h/11) > h*2/3){
-            p.y = h*2/3 - h/11;
+        if(p.y + (sizeY) > displayY*2/3){
+            p.y = displayY*2/3 - sizeY;
         }
 
-        charaDst = new Rect(p.x,p.y,p.x+w/11,p.y+h/11);
+        charaDst = new Rect(p.x,p.y,p.x+sizeX,p.y+sizeY);
 
     }
 
     public int getCenterX(){
-        return p.x + (w/11)/2;
+        return p.x + (sizeX)/2;
     }
 
     public int getCenterY(){
-        return p.y + (h/11)/2;
+        return p.y + (sizeY)/2;
     }
 
     public void drawMove(Canvas c){
-        c.drawBitmap(charaImage, charaSrc, charaDst, new Paint());
+        c.drawBitmap(charaImage, charaSrc, charaDst, paint);
     }
 
 }
@@ -669,27 +657,32 @@ class CharaBeam
     private Point p;
     private int beamCenterX;
     private int beamCenterY;
+    private Paint paint;
 
-    boolean CharaBeamFlag = false;
-    boolean isDead = true;
+    public boolean CharaBeamFlag = false;
+    public boolean isDead = true;
 
     private int scale;
+    private int charaBeamSpeed;
     private int radius, displayX;
 
     CharaBeam(int displayX,int scale){
-        p = new Point();
         this.displayX = displayX;
         this.scale = scale;
+        p = new Point();
+        paint = new Paint();
+        paint.setColor(Color.BLACK);
+        radius = displayX/80;
+        charaBeamSpeed = 5*scale;
     }
 
     private void init(int w, int h){
         p.x = w;
         p.y = h;
-        radius = displayX/80;
     }
 
     public void move(){
-        p.y -= 5 * scale;
+        p.y -= charaBeamSpeed;
         beamCenterX = p.x + radius/2;
         beamCenterY = p.y + radius/2;
 
@@ -703,10 +696,7 @@ class CharaBeam
         if(isDead){
             init(w,h);
         }
-
-        Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        c.drawCircle(p.x, p.y,radius, paint);
+        c.drawCircle(p.x, p.y, radius, paint);
     }
 
     public int getCenterX(){
@@ -727,38 +717,42 @@ class Enemy
     private Bitmap enemyImage;
     private Rect enemySrc, enemyDst;
     private Point p;
+    private Paint paint;
 
     private int enemyCenterX;
     private int enemyCenterY;
     private int displayX, displayY;
+    private int sizeX, sizeY;
+    private int scale;
 
     double hitDistance;
 
-    private int scale;
-
-    Enemy(Bitmap enemyImage, int w, int h, int displayX, int displayY, int scale){
+    Enemy(Bitmap enemyImage, int w, int h, int displayX, int displayY, int sizeX, int sizeY, int scale){
         this.enemyImage = enemyImage;
         p = new Point();
+        paint = new Paint();
         p.x = w;
         p.y = h;
         this.scale = scale;
         this.displayX = displayX;
         this.displayY = displayY;
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
+
         enemySrc = new Rect(0,0,enemyImage.getWidth(),enemyImage.getHeight());
-        enemyDst = new Rect(p.x,p.y,p.x+w/11,p.y+w/11);
+        enemyDst = new Rect(p.x,p.y,p.x+sizeX,p.y+sizeY);
     }
 
     public void move(){
         //displayX 480 displayY800
         p.y += 4 * scale;
-        enemyCenterX = p.x + (displayX/11)/2;
-        enemyCenterY = p.y + (displayY/11)/2;
-        enemyDst = new Rect(p.x,p.y,p.x+displayX/11,p.y+displayX/11);
-        //Log.d("hoge","displayX" + displayX + "displayY" + displayY);
+        enemyCenterX = p.x + (sizeX)/2;
+        enemyCenterY = p.y + (sizeY)/2;
+        enemyDst = new Rect(p.x,p.y,p.x+sizeX,p.y+sizeY);
     }
 
     public void drawMove(Canvas c){
-        c.drawBitmap(enemyImage, enemySrc, enemyDst, new Paint());
+        c.drawBitmap(enemyImage, enemySrc, enemyDst, paint);
     }
 
     public int getX(){
@@ -782,15 +776,21 @@ class EnemyBeam
 {
 
     private Point p;
+    private Paint paint;
     private int beamCenterX;
     private int beamCenterY;
     private double angle;
     private int scale, radius;
 
+
     EnemyBeam(int w, int h,int charaX,int charaY, int displayX, int scale){
         p = new Point();
         p.x = w;
         p.y = h;
+
+        paint = new Paint();
+        paint.setColor(Color.BLACK);
+
         angle = Math.atan2(charaY - h, charaX - w);
         this.scale = scale;
         radius = displayX/80;
@@ -804,8 +804,6 @@ class EnemyBeam
     }
 
     public void drawMove(Canvas c) {
-        Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
         c.drawCircle(p.x, p.y,radius, paint);
     }
 
