@@ -55,6 +55,7 @@ public class MainActivity extends Activity
         finish();
     }
 
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction()==KeyEvent.ACTION_DOWN) {
@@ -276,58 +277,83 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 else {
                     if (pauseX1 < touchX2 && touchX2 < pauseX2 && pauseY1 < touchY2 && touchY2 < pauseY2) {
                         pauseFlag = true;
-
-                        AlertDialog.Builder alertDialog=new AlertDialog.Builder(mContext);
-
-                        // ダイアログの設定
-                        alertDialog.setTitle("Paused");      //タイトル設定
-
-                        // OK(肯定的な)ボタンの設定
-                        alertDialog.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // OKボタン押下時の処理
-                                Log.d("AlertDialog", "Positive which :" + which);
-                                Intent title = new Intent(getContext(),TitleActivity.class);
-                                isRunning = false;
-                                //thread = null;
-                                mContext.startActivity(title);
-                            }
-                        });
-
-                        // SKIP(中立的な)ボタンの設定
-                        alertDialog.setNeutralButton("Resume", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // SKIPボタン押下時の処理
-                                Log.d("AlertDialog", "Neutral which :" + which);
-                                pauseFlag = false;
-                            }
-                        });
-
-                        // NG(否定的な)ボタンの設定
-                        alertDialog.setNegativeButton("Restart", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // NGボタン押下時の処理
-                                Log.d("AlertDialog", "Negative which :" + which);
-                                Intent mainIntent = new Intent(getContext(),MainActivity.class);
-                                isRunning = false;
-                                //thread = null;
-                                mContext.startActivity(mainIntent);
-                            }
-                        });
-
-                        // ダイアログの作成と描画
-//        alertDialog.create();
-                        alertDialog.show();
-
-
+                        showDialog(mContext,"Paused","");
                     }
                 }
-            }
 
+            }
         }
 
         return true;
     }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction()==KeyEvent.ACTION_DOWN) {
+            switch (event.getKeyCode()) {
+                case KeyEvent.KEYCODE_BACK:
+                    // 終了していいか、ダイアログで確認
+                    showDialog(mContext,"Quit game","Are you sure you want to quit?");
+                    return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+
+    //ダイアログ
+    private void showDialog(Context context,String title,String text) {
+        AlertDialog.Builder alertDialog=new AlertDialog.Builder(mContext);
+
+        // ダイアログの設定
+        alertDialog.setTitle(title);      //タイトル設定
+
+        if(text!=""){
+            alertDialog.setMessage(text);
+        }
+
+        // OK(肯定的な)ボタンの設定
+        alertDialog.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // OKボタン押下時の処理
+                Log.d("AlertDialog", "Positive which :" + which);
+                Intent title = new Intent(getContext(),TitleActivity.class);
+                title.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                title.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                isRunning = false;
+                //thread = null;
+                mContext.startActivity(title);
+            }
+        });
+
+        // SKIP(中立的な)ボタンの設定
+        alertDialog.setNeutralButton("Resume", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // SKIPボタン押下時の処理
+                Log.d("AlertDialog", "Neutral which :" + which);
+                pauseFlag = false;
+            }
+        });
+
+        // NG(否定的な)ボタンの設定
+        alertDialog.setNegativeButton("Restart", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // NGボタン押下時の処理
+                Log.d("AlertDialog", "Negative which :" + which);
+                Intent mainIntent = new Intent(getContext(),MainActivity.class);
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                isRunning = false;
+                //thread = null;
+                mContext.startActivity(mainIntent);
+            }
+        });
+
+        // ダイアログの作成と描画
+//        alertDialog.create();
+        alertDialog.show();
+    }
+
 
 
     public void run(){

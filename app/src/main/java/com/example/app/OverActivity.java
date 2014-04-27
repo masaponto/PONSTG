@@ -193,12 +193,16 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
                 Intent title = new Intent(getContext(),TitleActivity.class);
                 isRunning = false;
                 //thread = null;
+                title.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                title.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 mContext.startActivity(title);
             }
 
             if(retryX1 < x && x < retryX2 && retryY1< y && y < retryY2){
                 Intent mainIntent = new Intent(getContext(),MainActivity.class);
                 isRunning = false;
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 //thread = null;
                 mContext.startActivity(mainIntent);
             }
@@ -209,6 +213,7 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
                     //intent.setClassName("com.twitter.android","com.twitter.android.PostActivity");
                     intent.putExtra(Intent.EXTRA_TEXT, "PLAYED PON-SHOOTING!\nSCORE:" + score + " #PON_SHOOTING");
                     intent.setType("text/plain");
+
                     mContext.startActivity(intent);
                 }catch(Exception e){
                     Uri uri = Uri.parse("market://search?q=com.twitter.android");
