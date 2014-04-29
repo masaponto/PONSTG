@@ -36,6 +36,10 @@ public class MainActivity extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+
+        //タイトルいらない
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         //画面の大きさ取得
@@ -44,7 +48,6 @@ public class MainActivity extends Activity
         int displayX = display.getWidth();
         int displayY = display.getHeight();
 
-        super.onCreate(savedInstanceState);
         MySurfaceView mSurfaceView = new MySurfaceView(this, displayX, displayY);
         setContentView(mSurfaceView);
     }
@@ -52,17 +55,6 @@ public class MainActivity extends Activity
     public void onPause(){
         super.onPause();
         finish();
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction()==KeyEvent.ACTION_DOWN) {
-            switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_HOME:
-                    return true;
-            }
-        }
-        return super.dispatchKeyEvent(event);
     }
 
 }
@@ -74,6 +66,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     int displayX;
     int displayY;
 
+    //スコア
     int score = 0;
 
     //自機オブジェクト
@@ -97,7 +90,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     //爆発用リスト
     private List<Explotion> explotions = new ArrayList<Explotion>();
 
-    //private SurfaceHolder holder;
+    private SurfaceHolder holder;
 
     private boolean isRunning;
     private Thread thread;
@@ -135,10 +128,11 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     final Rect playSrc = new Rect(0,0,playImage.getWidth(),playImage.getHeight());
     boolean playPushFlag = false;
 
-
+    //音
     SoundPool sp = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
     int beamSoundId, hitSoundId;
 
+    //画面の比率
     int scale;
 
     Typeface typeface;
@@ -147,12 +141,22 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         super(context);
         mContext = context;
 
+        // for key event
+        this.requestFocus();
+        this.setFocusableInTouchMode(true);
+
+        setFocusable(true);
+        getHolder().addCallback(this);
+
+        //音
         beamSoundId = sp.load(context, R.raw.beamsound, 1);
         hitSoundId = sp.load(context, R.raw.hitsound, 1);
 
-        this.displayX = x;
-        this.displayY = y;
+        //画面サイズ
+        displayX = x;
+        displayY = y;
 
+        //ポーズボタンの画像の描画サイズ
         pauseX1 = displayX - displayX/5;
         pauseY1 = 0;
         pauseX2 = displayX;
@@ -160,16 +164,11 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         pauseDst = new Rect( pauseX1, pauseY1, pauseX2, pauseY2);
         pauseDst2 = new Rect( pauseX1, pauseY1 + displayX/100, pauseX2, pauseY2 + displayX/100);
 
+        //画面の割合を横480を基準にする
         scale = displayX / 480;
 
         //typeface = Typeface.createFromAsset(getContext().getAssets(), "Pigmo-00_pilot.ttf");
 
-        // for key event
-        this.requestFocus();
-        this.setFocusableInTouchMode(true);
-
-        setFocusable(true);
-        getHolder().addCallback(this);
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height ){
