@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MainActivity extends Activity
 {
@@ -55,40 +54,16 @@ public class MainActivity extends Activity
         finish();
     }
 
-
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction()==KeyEvent.ACTION_DOWN) {
             switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_BACK:
-                    // 終了していいか、ダイアログで確認
-                    showDialog(MainActivity.this,"Quit game","Are you sure you want to quit?");
+                case KeyEvent.KEYCODE_HOME:
                     return true;
             }
         }
         return super.dispatchKeyEvent(event);
     }
-
-
-    //ダイアログ
-    private void showDialog(Context context,String title,String text) {
-        AlertDialog ad = new AlertDialog.Builder(this)
-                .setTitle(title)
-                .setMessage(text)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        finish(); //終了
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                    }
-                })
-
-                .show();
-    }
-
 
 }
 
@@ -166,7 +141,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
     int scale;
 
-    //Typeface typeface;
+    Typeface typeface;
 
     public MySurfaceView(Context context,int x,int y){
         super(context);
@@ -188,6 +163,10 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         scale = displayX / 480;
 
         //typeface = Typeface.createFromAsset(getContext().getAssets(), "Pigmo-00_pilot.ttf");
+
+        // for key event
+        this.requestFocus();
+        this.setFocusableInTouchMode(true);
 
         setFocusable(true);
         getHolder().addCallback(this);
@@ -277,7 +256,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 else {
                     if (pauseX1 < touchX2 && touchX2 < pauseX2 && pauseY1 < touchY2 && touchY2 < pauseY2) {
                         pauseFlag = true;
-                        showDialog(mContext,"Paused","");
+                        showDialog(mContext,"Paused");
                     }
                 }
 
@@ -288,29 +267,24 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     }
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction()==KeyEvent.ACTION_DOWN) {
-            switch (event.getKeyCode()) {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        super.onKeyDown(keyCode, event);
+            switch (keyCode) {
                 case KeyEvent.KEYCODE_BACK:
+                    pauseFlag = true;
                     // 終了していいか、ダイアログで確認
-                    showDialog(mContext,"Quit game","Are you sure you want to quit?");
-                    return true;
+                    showDialog(mContext,"Paused");
+                    break;
             }
-        }
-        return super.dispatchKeyEvent(event);
+        return true;
     }
 
-
     //ダイアログ
-    private void showDialog(Context context,String title,String text) {
+    private void showDialog(Context context,String title) {
         AlertDialog.Builder alertDialog=new AlertDialog.Builder(mContext);
 
         // ダイアログの設定
         alertDialog.setTitle(title);      //タイトル設定
-
-        if(text!=""){
-            alertDialog.setMessage(text);
-        }
 
         // OK(肯定的な)ボタンの設定
         alertDialog.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
@@ -350,7 +324,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         });
 
         // ダイアログの作成と描画
-//        alertDialog.create();
         alertDialog.show();
     }
 
@@ -382,12 +355,9 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
                     if(!hitFlag) {
 
-
                         if(count % (60 / scale) == 0) {
                             Random rnd = new Random();
-                            //int ran = rnd.nextInt(displayX - 2 * (displayX/11)) + (displayX/11) / 2;
-                            int ran = rnd.nextInt(displayX - (displayX/11)) + displayX/11;
-                            //int ran = rnd.nextInt(displayX - (displayX/2));
+                            int ran = rnd.nextInt(displayX - (displayX/11));
                             enemys.add(new Enemy(enemyImage, ran, 0, displayX, displayY, displayX/11, displayX/11, scale));
                         }
 
@@ -436,7 +406,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                     }
 
 
-                    for (int i = 0; i < enemyBeams.size(); i++) {
+                    for(int i = 0; i < enemyBeams.size(); i++) {
                         if (!hitFlag) {
                             enemyBeams.get(i).move();
                         }
