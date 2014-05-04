@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -719,6 +720,15 @@ class Enemy
 
     double hitDistance;
 
+
+    //add
+    Matrix matrix1 = new Matrix();
+    Matrix matrix2 = new Matrix();
+    Matrix matrix3 = new Matrix();
+    Matrix matrix4 = new Matrix();
+    Bitmap enemy1, enemy2, enemy3, enemy4;
+    private int count;
+
     Enemy(Bitmap enemyImage, int w, int h, int displayX, int displayY, int sizeX, int sizeY, int scale){
         this.enemyImage = enemyImage;
         p = new Point();
@@ -731,8 +741,22 @@ class Enemy
         this.sizeX = sizeX;
         this.sizeY = sizeY;
 
-        enemySrc = new Rect(0,0,enemyImage.getWidth(),enemyImage.getHeight());
-        enemyDst = new Rect(p.x,p.y,p.x+sizeX,p.y+sizeY);
+      //  enemySrc = new Rect(0,0,enemyImage.getWidth(),enemyImage.getHeight());
+       // enemyDst = new Rect(p.x,p.y,p.x+sizeX,p.y+sizeY);
+
+        matrix1.postScale(0.1F,0.1F);
+        matrix2.postRotate(22.5F);
+        matrix2.postScale(0.1F,0.1F);
+        matrix3.postRotate(45F);
+        matrix3.postScale(0.1F,0.1F);
+        matrix4.postRotate(67.5F);
+        matrix4.postScale(0.1F,0.1F);
+        enemy1 = Bitmap.createBitmap(enemyImage,0,0,enemyImage.getWidth(),enemyImage.getHeight(),matrix1,true);
+        enemy2 = Bitmap.createBitmap(enemyImage,0,0,enemyImage.getWidth(),enemyImage.getHeight(),matrix2,true);
+        enemy3 = Bitmap.createBitmap(enemyImage,0,0,enemyImage.getWidth(),enemyImage.getHeight(),matrix3,true);
+        enemy4 = Bitmap.createBitmap(enemyImage,0,0,enemyImage.getWidth(),enemyImage.getHeight(),matrix4,true);
+
+        count = 0;
     }
 
     public void move(){
@@ -740,11 +764,28 @@ class Enemy
         p.y += 4 * scale;
         enemyCenterX = p.x + (sizeX)/2;
         enemyCenterY = p.y + (sizeY)/2;
-        enemyDst = new Rect(p.x,p.y,p.x+sizeX,p.y+sizeY);
+       // enemyDst = new Rect(p.x,p.y,p.x+sizeX,p.y+sizeY);
     }
 
     public void drawMove(Canvas c){
-        c.drawBitmap(enemyImage, enemySrc, enemyDst, paint);
+        //c.drawBitmap(enemyImage, enemySrc, enemyDst, paint);
+        count++;
+
+        if(count < 5){
+            c.drawBitmap(enemy1, p.x, p.y, paint);
+        }else if(5 <= count && count < 10){
+            c.drawBitmap(enemy2, p.x, p.y, paint);
+        }else if(10 <= count && count < 15){
+            c.drawBitmap(enemy3, p.x, p.y, paint);
+        }else{
+            c.drawBitmap(enemy4, p.x, p.y, paint);
+        }
+
+
+        //c.drawBitmap(enemy3, p.x, p.y, paint);
+        if(count >= 20){
+            count = 0;
+        }
     }
 
     public int getX(){
