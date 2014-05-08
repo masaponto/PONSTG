@@ -287,7 +287,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         alertDialog.setTitle(title);      //タイトル設定
 
         // OK(肯定的な)ボタンの設定
-        alertDialog.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton("Restart", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 // OKボタン押下時の処理
                 Log.d("AlertDialog", "Positive which :" + which);
@@ -310,7 +310,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         });
 
         // NG(否定的な)ボタンの設定
-        alertDialog.setNegativeButton("Restart", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 // NGボタン押下時の処理
                 Log.d("AlertDialog", "Negative which :" + which);
@@ -336,6 +336,9 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         int count = 50;
         int overTime = 0;
 
+        int enemyMoveSpeed, enemyIncidence;
+        int enemyBeamMoveSpeed, enemyBeamIncidence;
+
         final int explotionSpeed = 5;
 
         final int enemyR = displayX/11;
@@ -355,139 +358,30 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
                     if(!hitFlag) {
 
-                        if(count % (60 / scale) == 0) {
-                            Random rnd = new Random();
-                            int ran = rnd.nextInt(displayX - (displayX/11));
-                            enemys.add(new Enemy(enemyImage, ran, 0, displayX, displayY, displayX/11, displayX/11, scale));
+                        enemyMoveSpeed = (score / 15) + 4;
+                        enemyIncidence = 60 - (score / 15 ) * 8;
+                        if(enemyIncidence < 10){
+                            enemyIncidence = 10;
                         }
 
-                        if(count % 100 == 0 && !enemys.isEmpty()) {
-                            for(int i = 0; i < enemys.size(); i++) {
-                                enemyBeams.add(new EnemyBeam(enemys.get(i).getCenterX()
-                                        , enemys.get(i).getCenterY(), chara.getCenterX(), chara.getCenterY(), displayX, scale));
-                            }
+                        addEnemy(count, enemyMoveSpeed, enemyIncidence);
+
+                        enemyBeamMoveSpeed = (score / 15) + 4;
+                        enemyBeamIncidence = 70 - (score / 15) * 5;
+                        if(enemyBeamIncidence < 10){
+                            enemyBeamIncidence = 10;
                         }
 
+                        addEnemyBeam(count, enemyBeamIncidence, enemyBeamMoveSpeed);
                     }
 
-                    for(int i = 0; i < enemys.size(); i++){
+                    overTime =  moveEnemy(charaR, overTime, count);
+                    overTime = moveEnemyBeam(charaR, overTime, count);
+                    moveCharaBeam(enemyR,count);
 
-                        if(!hitFlag) {
-                            enemys.get(i).move();
-                        }
+                    removeEnemy();
 
-                        //画面外に出たらリストから消す
-                        if(enemys.get(i).getY() > displayY * 2/3){
-                            enemys.remove(i);
-                        }
-
-                        chara.hitDistance1 = (int) Math.sqrt(Math.pow(chara.getCenterX() - enemys.get(i).getCenterX(), 2)
-                                + Math.pow(chara.getCenterY() - enemys.get(i).getCenterY(), 2));
-
-                        if(chara.hitDistance1 < charaR){
-
-                            hitFlag = true;
-
-                            if (overTime == 0) {
-                                overTime = count;
-                            }
-
-                            explotions.add(new Explotion(explotionImage, chara.getCenterX()
-                                    , chara.getCenterY(), count));
-
-                            explotions.add(new Explotion(explotionImage, enemys.get(i).getCenterX()
-                                    , enemys.get(i).getCenterY(), count));
-
-                            enemys.remove(i);
-
-                            sp.play(hitSoundId, 1.0F, 1.0F, 0, 0, 1.0F);
-
-                        }
-                    }
-
-
-                    for(int i = 0; i < enemyBeams.size(); i++) {
-                        if (!hitFlag) {
-                            enemyBeams.get(i).move();
-                        }
-
-                        chara.hitDistance2 = (int) Math.sqrt(Math.pow(chara.getCenterX() - enemyBeams.get(i).getCenterX(), 2)
-                                + Math.pow(chara.getCenterY() - enemyBeams.get(i).getCenterY(), 2));
-
-                        if (enemyBeams.get(i).getY() > displayY * 2 / 3 || enemyBeams.get(i).getY() < 0
-                                || enemyBeams.get(i).getX() < 0 || enemyBeams.get(i).getX() > displayX) {
-                            enemyBeams.remove(i);
-                        }
-
-
-                        if (chara.hitDistance2 < charaR) {
-                            hitFlag = true;
-
-                            if (overTime == 0) {
-                                overTime = count;
-                            }
-
-                            explotions.add(new Explotion(explotionImage, chara.getCenterX()
-                                    , chara.getCenterY(), count));
-
-                            enemyBeams.remove(i);
-
-                            sp.play(hitSoundId, 1.0F, 1.0F, 0, 0, 1.0F);
-
-                        }
-
-                    }
-
-                    for (int i = 0; i < N; i++) {
-                        if (charaBeam[i].CharaBeamFlag) {
-                            charaBeam[i].isDead = false;
-
-                            if (!hitFlag) {
-                                charaBeam[i].move();
-                            }
-
-                            for (int j = 0; j < enemys.size(); j++) {
-                                enemys.get(j).hitDistance = Math.sqrt(Math.pow((enemys.get(j).getCenterX() - charaBeam[i].getCenterX()), 2)
-                                        + Math.pow((enemys.get(j).getCenterY() - charaBeam[i].getCenterY()), 2));
-
-                                //ビームの当たり判定
-                                if (enemys.get(j).hitDistance < enemyR) {
-
-                                    score++;
-
-                                    explotions.add(new Explotion(explotionImage, enemys.get(j).getCenterX()
-                                            , enemys.get(j).getCenterY(), count));
-
-                                    charaBeam[i].CharaBeamFlag = false;
-                                    charaBeam[i].isDead = true;
-
-                                    enemys.remove(j);
-
-                                    sp.play(hitSoundId, 1.0F, 1.0F, 0, 0, 1.0F);
-
-                                }
-
-                            }
-
-                        }
-                    }
-
-
-                    //爆発処理
-                    for (int i = 0; i < explotions.size(); i++) {
-
-                        for (int j = 1; j < 10; j++) {
-                            if (explotions.get(i).count + explotionSpeed * j < count) {
-                                explotions.get(i).exSwitch = j;
-                            }
-                        }
-
-                        if (explotions.get(i).count + explotionSpeed * 10 < count) {
-                            explotions.remove(i);
-                        }
-
-                    }
-
+                    bom(explotionSpeed,count);
 
                 }
 
@@ -495,11 +389,11 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
                 getHolder().unlockCanvasAndPost(canvas);
 
-                if (overTime != 0 && overTime + 100 < count) {
+                if(overTime != 0 && overTime + 100 < count){
                     overFlag = true;
                 }
 
-                if (overFlag) {
+                if(overFlag){
                     isRunning = false;
                     gameOver();
                 }
@@ -512,6 +406,175 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
             Thread.sleep(10);//お決まり
         } catch (Exception e){}
     }
+
+
+    public void addEnemy(int count, int moveSpeed, int incidence){
+        if(count % (incidence / scale) == 0) {
+            Random rnd = new Random();
+            int ran = rnd.nextInt(displayX - (displayX/11));
+            enemys.add(new Enemy(enemyImage, ran, 0, displayX, displayY, displayX/11, displayX/11, scale, moveSpeed));
+        }
+    }
+
+    public void addEnemyBeam(int count, int incidence, int moveSpeed){
+        if(count % incidence == 0 && !enemys.isEmpty()) {
+            for(int i = 0; i < enemys.size(); i++) {
+                enemyBeams.add(new EnemyBeam(enemys.get(i).getCenterX()
+                        , enemys.get(i).getCenterY(), chara.getCenterX(), chara.getCenterY(), displayX, scale, moveSpeed));
+            }
+        }
+    }
+
+    public void removeEnemy(){
+        for(int i = 0; i < enemys.size(); i++){
+            if(enemys.get(i).deathFlag == true){
+                enemys.remove(i);
+            }
+        }
+    }
+
+
+    public int  moveEnemy(int charaR, int overTime, int count){
+        for(int i = 0; i < enemys.size(); i++){
+
+            if(!hitFlag) {
+                enemys.get(i).move();
+            }
+
+            chara.hitDistance1 = (int) Math.sqrt(Math.pow(chara.getCenterX() - enemys.get(i).getCenterX(), 2)
+                    + Math.pow(chara.getCenterY() - enemys.get(i).getCenterY(), 2));
+
+            if(chara.hitDistance1 < charaR){
+
+                hitFlag = true;
+
+                if (overTime == 0) {
+                    overTime = count;
+                }
+
+                Log.d("overTime","time" + overTime);
+
+
+                explotions.add(new Explotion(explotionImage, chara.getCenterX()
+                        , chara.getCenterY(), count));
+
+                explotions.add(new Explotion(explotionImage, enemys.get(i).getCenterX()
+                        , enemys.get(i).getCenterY(), count));
+
+                enemys.get(i).deathFlag = true;
+
+                sp.play(hitSoundId, 1.0F, 1.0F, 0, 0, 1.0F);
+
+            }
+
+            //画面外に出たらリストから消す
+            if(enemys.get(i).getY() > displayY * 2/3 || enemys.get(i).getCenterX() > displayX || enemys.get(i).getCenterX() < 0 ){
+                enemys.get(i).deathFlag = true;
+            }
+
+        }
+
+        return overTime;
+    }
+
+
+
+
+    public int  moveEnemyBeam(int charaR, int overTime, int count){
+        for(int i = 0; i < enemyBeams.size(); i++) {
+            if (!hitFlag) {
+                enemyBeams.get(i).move();
+            }
+
+
+            chara.hitDistance2 = (int) Math.sqrt(Math.pow(chara.getCenterX() - enemyBeams.get(i).getCenterX(), 2)
+                    + Math.pow(chara.getCenterY() - enemyBeams.get(i).getCenterY(), 2));
+
+            if (enemyBeams.get(i).getY() > displayY * 2 / 3 || enemyBeams.get(i).getY() < 0
+                    || enemyBeams.get(i).getX() < 0 || enemyBeams.get(i).getX() > displayX) {
+                enemyBeams.remove(i);
+            }
+
+
+            if (chara.hitDistance2 < charaR) {
+                hitFlag = true;
+
+                if (overTime == 0) {
+                    overTime = count;
+                }
+
+                explotions.add(new Explotion(explotionImage, chara.getCenterX()
+                        , chara.getCenterY(), count));
+
+                enemyBeams.remove(i);
+
+                sp.play(hitSoundId, 1.0F, 1.0F, 0, 0, 1.0F);
+
+            }
+
+        }
+        return overTime;
+
+    }
+
+
+    public void moveCharaBeam(int enemyR, int count){
+        for (int i = 0; i < N; i++) {
+            if (charaBeam[i].CharaBeamFlag) {
+                charaBeam[i].isDead = false;
+
+                if (!hitFlag) {
+                    charaBeam[i].move();
+                }
+
+                for (int j = 0; j < enemys.size(); j++) {
+                    enemys.get(j).hitDistance = Math.sqrt(Math.pow((enemys.get(j).getCenterX() - charaBeam[i].getCenterX()), 2)
+                            + Math.pow((enemys.get(j).getCenterY() - charaBeam[i].getCenterY()), 2));
+
+                    //ビームの当たり判定
+                    if (enemys.get(j).hitDistance < enemyR) {
+
+                        score++;
+
+                        explotions.add(new Explotion(explotionImage, enemys.get(j).getCenterX()
+                                , enemys.get(j).getCenterY(), count));
+
+                        charaBeam[i].CharaBeamFlag = false;
+                        charaBeam[i].isDead = true;
+
+                        //enemys.remove(j);
+                        //enemys.set(j,null);
+                        enemys.get(j).deathFlag = true;
+
+                        sp.play(hitSoundId, 1.0F, 1.0F, 0, 0, 1.0F);
+
+                    }
+
+                }
+            }
+        }
+    }
+
+
+
+
+    public void bom(int explotionSpeed, int count){
+        //爆発処理
+        for (int i = 0; i < explotions.size(); i++) {
+
+            for (int j = 1; j < 10; j++) {
+                if (explotions.get(i).count + explotionSpeed * j < count) {
+                    explotions.get(i).exSwitch = j;
+                }
+            }
+
+            if (explotions.get(i).count + explotionSpeed * 10 < count) {
+                explotions.remove(i);
+            }
+
+        }
+    }
+
 
 
     private void drawGame(Canvas canvas, Paint mPaint){
@@ -717,9 +780,11 @@ class Enemy
     private int displayX, displayY;
     private int sizeX, sizeY;
     private int scale;
+    private int moveSpeed;
 
     double hitDistance;
 
+    public boolean deathFlag = false;
 
     //add
     Matrix matrix1 = new Matrix();
@@ -729,7 +794,7 @@ class Enemy
     Bitmap enemy1, enemy2, enemy3, enemy4;
     private int count;
 
-    Enemy(Bitmap enemyImage, int w, int h, int displayX, int displayY, int sizeX, int sizeY, int scale){
+    Enemy(Bitmap enemyImage, int w, int h, int displayX, int displayY, int sizeX, int sizeY, int scale, int moveSpeed){
         this.enemyImage = enemyImage;
         p = new Point();
         paint = new Paint();
@@ -740,6 +805,10 @@ class Enemy
         this.displayY = displayY;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
+        this.moveSpeed = moveSpeed;
+
+        enemyCenterX = p.x + (sizeX)/2;
+        enemyCenterY = p.y + (sizeY)/2;
 
       //  enemySrc = new Rect(0,0,enemyImage.getWidth(),enemyImage.getHeight());
        // enemyDst = new Rect(p.x,p.y,p.x+sizeX,p.y+sizeY);
@@ -761,7 +830,7 @@ class Enemy
 
     public void move(){
         //displayX 480 displayY800
-        p.y += 4 * scale;
+        p.y += moveSpeed * scale;
         enemyCenterX = p.x + (sizeX)/2;
         enemyCenterY = p.y + (sizeY)/2;
        // enemyDst = new Rect(p.x,p.y,p.x+sizeX,p.y+sizeY);
@@ -814,9 +883,9 @@ class EnemyBeam
     private int beamCenterY;
     private double angle;
     private int scale, radius;
+    private int moveSpeed;
 
-
-    EnemyBeam(int w, int h, int charaX, int charaY, int displayX, int scale){
+    EnemyBeam(int w, int h, int charaX, int charaY, int displayX, int scale, int moveSpeed){
         p = new Point();
         p.x = w;
         p.y = h;
@@ -827,30 +896,29 @@ class EnemyBeam
         angle = Math.atan2(charaY - h, charaX - w);
         this.scale = scale;
         radius = displayX/80;
+        this.moveSpeed = moveSpeed;
     }
 
     public void move(){
-        p.x += Math.cos(angle) * 4 * scale;
-        p.y += Math.sin(angle) * 4 * scale;
+        p.x += Math.cos(angle) * moveSpeed * scale;
+        p.y += Math.sin(angle) * moveSpeed * scale;
         beamCenterX = p.x + radius/2;
         beamCenterY = p.y + radius/2;
     }
 
     public void drawMove(Canvas c) {
-        c.drawCircle(p.x, p.y,radius, paint);
+        c.drawCircle(p.x, p.y, radius, paint);
     }
 
     public int getX(){
         return p.x;
     }
-
     public int getY(){
         return p.y;
     }
     public int getCenterX(){
         return beamCenterX;
     }
-
     public int getCenterY(){
         return beamCenterY;
     }

@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -121,6 +122,8 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
 
     //Typeface typeface;
 
+    int highScore;
+
     int scale;
 
     public TitleSurfaceView(Context context,int x,int y){
@@ -148,6 +151,8 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
         playDst2 = new Rect( playX1, playY1 + displayX/100, playX2, playY2 + displayX/100);
 
         //typeface = Typeface.createFromAsset(getContext().getAssets(), "Pigmo-00_pilot.ttf");
+
+        highScore = loadHighScore(context);
 
         setFocusable(true);
         getHolder().addCallback(this);
@@ -273,10 +278,18 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
             canvas.drawText("PON",displayX*1/4, displayY*1/3 - 52 * scale, mPaint);
             canvas.drawText("SHOOTING",displayX*1/4, displayY*1/3, mPaint);
             mPaint.setTextSize(30 * scale);
+            canvas.drawText("HIGHSCORE:" + highScore, displayX/4 , displayY/3 + 30*scale + 5, mPaint);
 
         }
 
         canvas.drawText("developed by masaponto",0,displayY - 40 * scale, mPaint);
+    }
+
+    public int loadHighScore( Context context ){
+        // プリファレンスの準備 //
+        SharedPreferences pref = context.getSharedPreferences( "HighScore", Context.MODE_WORLD_READABLE );
+
+        return pref.getInt( "HighScore", 0 );
     }
 
 }
