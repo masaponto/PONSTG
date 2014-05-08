@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -90,6 +91,8 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
 
     int displayX, displayY;
     String score;
+    int nowScore;
+    int  highScore = 0;
 
     private boolean isRunning = true;
     private Thread thread;
@@ -156,6 +159,21 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
 
         setFocusable(true);
         getHolder().addCallback(this);
+
+        calcHighScore(context,score);
+
+    }
+
+
+    public void calcHighScore(Context context, String score){
+        nowScore = Integer.parseInt(score);
+        highScore = loadHighScore(context);
+
+        if( nowScore > highScore ){
+            saveHighScore(context, nowScore);
+        }
+
+        highScore = loadHighScore(context);
     }
 
     public boolean onTouchEvent(MotionEvent event){
@@ -274,6 +292,8 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
         mPaint.setTextSize(40 * scale);
         canvas.drawText("SCORE:" + score, displayX/4 , displayY/2, mPaint);
 
+        canvas.drawText("HIGHSCORE:" + highScore, displayX/4 , displayY/2+70, mPaint);
+
         if(homePushFlag){
             canvas.drawBitmap(homeImage, homeSrc, homeDst2, mPaint);
         }else{
@@ -297,5 +317,29 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
         mPaint.setColor(Color .BLACK);
 
     }
+
+    public void saveHighScore(Context mcontext, int score){
+
+        SharedPreferences pref = mcontext.getSharedPreferences( "HighScore", Context.MODE_WORLD_READABLE );
+
+        // プリファレンスに書き込むためのEditorオブジェクト取得 //
+        SharedPreferences.Editor editor = pref.edit();
+
+        // "user_name" というキーで名前を登録
+        editor.putInt( "HighScore", score);
+
+        // 書き込みの確定（実際にファイルに書き込む）
+        editor.commit();
+
+    }
+
+
+    public int loadHighScore( Context context ){
+        // プリファレンスの準備 //
+        SharedPreferences pref = context.getSharedPreferences( "HighScore", Context.MODE_WORLD_READABLE );
+
+        return pref.getInt( "HighScore", 0 );
+    }
+
 
 }
