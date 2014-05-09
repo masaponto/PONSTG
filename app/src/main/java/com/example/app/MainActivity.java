@@ -542,8 +542,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                         charaBeam[i].CharaBeamFlag = false;
                         charaBeam[i].isDead = true;
 
-                        //enemys.remove(j);
-                        //enemys.set(j,null);
                         enemys.get(j).deathFlag = true;
 
                         sp.play(hitSoundId, 1.0F, 1.0F, 0, 0, 1.0F);
@@ -810,16 +808,13 @@ class Enemy
         enemyCenterX = p.x + (sizeX)/2;
         enemyCenterY = p.y + (sizeY)/2;
 
-      //  enemySrc = new Rect(0,0,enemyImage.getWidth(),enemyImage.getHeight());
-       // enemyDst = new Rect(p.x,p.y,p.x+sizeX,p.y+sizeY);
-
-        matrix1.postScale(0.1F,0.1F);
+        matrix1.postScale(0.1F*scale,0.1F*scale);
         matrix2.postRotate(22.5F);
-        matrix2.postScale(0.1F,0.1F);
+        matrix2.postScale(0.1F*scale,0.1F*scale);
         matrix3.postRotate(45F);
-        matrix3.postScale(0.1F,0.1F);
+        matrix3.postScale(0.1F*scale,0.1F*scale);
         matrix4.postRotate(67.5F);
-        matrix4.postScale(0.1F,0.1F);
+        matrix4.postScale(0.1F*scale,0.1F*scale);
         enemy1 = Bitmap.createBitmap(enemyImage,0,0,enemyImage.getWidth(),enemyImage.getHeight(),matrix1,true);
         enemy2 = Bitmap.createBitmap(enemyImage,0,0,enemyImage.getWidth(),enemyImage.getHeight(),matrix2,true);
         enemy3 = Bitmap.createBitmap(enemyImage,0,0,enemyImage.getWidth(),enemyImage.getHeight(),matrix3,true);
@@ -829,15 +824,13 @@ class Enemy
     }
 
     public void move(){
-        //displayX 480 displayY800
         p.y += moveSpeed * scale;
         enemyCenterX = p.x + (sizeX)/2;
         enemyCenterY = p.y + (sizeY)/2;
-       // enemyDst = new Rect(p.x,p.y,p.x+sizeX,p.y+sizeY);
     }
 
     public void drawMove(Canvas c){
-        //c.drawBitmap(enemyImage, enemySrc, enemyDst, paint);
+
         count++;
 
         if(count < 5){
@@ -850,8 +843,6 @@ class Enemy
             c.drawBitmap(enemy4, p.x, p.y, paint);
         }
 
-
-        //c.drawBitmap(enemy3, p.x, p.y, paint);
         if(count >= 20){
             count = 0;
         }
