@@ -847,6 +847,7 @@ class EnemyBeam
     public int getY(){
         return p.y;
     }
+
     public int getCenterX(){
         return beamCenterX;
     }
