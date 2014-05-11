@@ -103,6 +103,10 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     //pause
     boolean pauseFlag = false;
 
+    //
+    boolean touchFlag = false;
+
+
     //touchされた場所
     int touchX, touchX2;
     int touchY, touchY2;
@@ -223,15 +227,11 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 }
                 else{
                     if(!pauseFlag){
-                        //beamを出す
-                        if (!charaBeam[beamCount].CharaBeamFlag) {
-                            sp.play(beamSoundId, 1.0F, 1.0F, 0, 0, 1.0F);
-                        }
-                        charaBeam[beamCount].CharaBeamFlag = true;
-                        beamCount = (beamCount + 1) % N;
+                        touchFlag = true;
                     }
 
                 }
+
             }
 
 
@@ -247,6 +247,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
             if(action == MotionEvent.ACTION_UP){
                 pausePushFlag = false;
                 playPushFlag = false;
+                touchFlag = false;
 
                 if(pauseFlag){
                     if (pauseX1 < touchX2 && touchX2 < pauseX2 && pauseY1 < touchY2 && touchY2 < pauseY2) {
@@ -375,6 +376,8 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                         addEnemyBeam(count, enemyBeamIncidence, enemyBeamMoveSpeed);
                     }
 
+                    addBeam(count);
+
                     overTime =  moveEnemy(charaR, overTime, count);
                     overTime = moveEnemyBeam(charaR, overTime, count);
                     moveCharaBeam(enemyR,count);
@@ -405,6 +408,18 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         try {
             Thread.sleep(10);//お決まり
         } catch (Exception e){}
+    }
+
+
+    public void addBeam(int count){
+        //beamを出す
+        if(touchFlag && count % 10 == 0){
+            if(!charaBeam[beamCount].CharaBeamFlag){
+               sp.play(beamSoundId, 1.0F, 1.0F, 0, 0, 1.0F);
+            }
+            charaBeam[beamCount].CharaBeamFlag = true;
+            beamCount = (beamCount + 1) % N;
+        }
     }
 
 
