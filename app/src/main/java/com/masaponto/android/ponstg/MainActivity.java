@@ -104,6 +104,9 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     boolean touchFlag = false;
 
 
+    int count;
+    int overTime;
+
     //touchされた場所
     int touchX, touchX2;
     int touchY, touchY2;
@@ -276,7 +279,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     }
 
     //ダイアログ
-    private void showDialog(Context context, String title){
+    private void showDialog(final Context context, String title){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
         // ダイアログの設定
@@ -287,12 +290,13 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
             public void onClick(DialogInterface dialog, int which){
                 // OKボタン押下時の処理
                 Log.d("AlertDialog", "Positive which :" + which);
-                Intent title = new Intent(getContext(), TitleActivity.class);
-                title.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                title.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                isRunning = false;
+                //Intent title = new Intent(getContext(), MainActivity.class);
+                //title.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                //title.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                //isRunning = false;
                 //thread = null;
-                mContext.startActivity(title);
+                //mContext.startActivity(title);
+                gameInit();
             }
         });
 
@@ -310,12 +314,12 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
             public void onClick(DialogInterface dialog, int which){
                 // NGボタン押下時の処理
                 Log.d("AlertDialog", "Negative which :" + which);
-                Intent mainIntent = new Intent(getContext(), MainActivity.class);
-                mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                mainIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                Intent titleIntent = new Intent(getContext(), TitleActivity.class);
+                titleIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                titleIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 isRunning = false;
                 //thread = null;
-                mContext.startActivity(mainIntent);
+                mContext.startActivity(titleIntent);
             }
         });
 
@@ -324,12 +328,39 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     }
 
 
+    public void gameInit(){
+        isRunning = false;
+        overTime = 0;
+        count = 0;
+        score = 0;
+        chara.init(displayX,displayY);
+
+        for(int i = 0; i < enemys.size(); i++){
+            enemys.remove(i);
+        }
+
+        for(int i = 0; i < enemyBeams.size(); i++){
+            enemyBeams.remove(i);
+        }
+
+        for(int i = 0; i < explotions.size(); i++){
+            explotions.remove(i);
+        }
+
+        for(int i = 0; i < N; i++){
+            charaBeam[i].isDead = false;
+        }
+
+        isRunning = true;
+        pauseFlag = false;
+    }
+
     public void run(){
 
         Paint mPaint = new Paint();
 
-        int count = 50;
-        int overTime = 0;
+        count = 50;
+        overTime = 0;
 
         int enemyMoveSpeed, enemyIncidence;
         int enemyBeamMoveSpeed, enemyBeamIncidence;
@@ -666,7 +697,7 @@ class Chara{
         init(displayX, displayY);
     }
 
-    private void init(int displayX, int displayY){
+    public void init(int displayX, int displayY){
         p.x = displayX / 2 - (sizeX) / 2;
         p.y = displayY * 2 / 3 - (sizeY) * 3;
         charaDst = new Rect(p.x, p.y, p.x + sizeX, p.y + sizeY);

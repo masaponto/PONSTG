@@ -99,19 +99,12 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
     private Context mContext;
     Resources res = getResources();
 
-    Bitmap helpImage = BitmapFactory.decodeResource(res, R.drawable.help);
-    final Rect helpSrc = new Rect(0, 0, helpImage.getWidth(), helpImage.getHeight());
-    int helpX1, helpX2, helpY1, helpY2;
-    Rect helpDst, helpDst2;
-
     Bitmap playImage = BitmapFactory.decodeResource(res, R.drawable.play);
     final Rect playSrc = new Rect(0, 0, playImage.getWidth(), playImage.getHeight());
     int playX1, playX2, playY1, playY2;
     Rect playDst, playDst2;
 
-    boolean helpPushFlag = false;
     boolean playPushFlag = false;
-    boolean helpFlag = false;
 
     //Typeface typeface;
 
@@ -129,17 +122,10 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
 
         scale = displayX / 480;
 
-        helpX1 = displayX * 1 / 3 - displayX * 1 / 4;
-        helpY1 = displayY * 2 / 3;
-        helpX2 = displayX * 1 / 3;
-        helpY2 = displayY * 2 / 3 + displayX * 1 / 4;
-        helpDst = new Rect(helpX1, helpY1, helpX2, helpY2);
-        helpDst2 = new Rect(helpX1, helpY1 + displayX / 100, helpX2, helpY2 + displayX / 100);
-
-        playX1 = displayX * 2 / 3 - displayX * 1 / 4;
-        playY1 = displayY * 2 / 3;
-        playX2 = displayX * 2 / 3;
-        playY2 = displayY * 2 / 3 + displayX * 1 / 4;
+        playX1 = displayX / 2 - displayX/5;
+        playY1 = displayY * 1 / 2;
+        playX2 = displayX / 2 + displayX/5;
+        playY2 = displayY * 1 / 2 + displayX * 2 / 5;
         playDst = new Rect(playX1, playY1, playX2, playY2);
         playDst2 = new Rect(playX1, playY1 + displayX / 100, playX2, playY2 + displayX / 100);
 
@@ -159,38 +145,23 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
 
         if(event.getAction() == MotionEvent.ACTION_DOWN){
 
-            if(!helpFlag){
-                if(helpX1 < x && x < helpX2 && helpY1 < y && y < helpY2){
-                    helpPushFlag = true;
-                }
-                if(playX1 < x && x < playX2 && playY1 < y && y < playY2){
-                    playPushFlag = true;
-                }
+            if(playX1 < x && x < playX2 && playY1 < y && y < playY2){
+                playPushFlag = true;
             }
 
         }
 
         if(event.getAction() == MotionEvent.ACTION_UP){
 
-            helpPushFlag = false;
             playPushFlag = false;
 
-            if(helpFlag){
-                helpFlag = false;
-            }else{
-                if(helpX1 < x && x < helpX2 && helpY1 < y && y < helpY2){
-                    helpFlag = true;
-                }
-
-                if(playX1 < x && x < playX2 && playY1 < y && y < playY2){
-                    Intent mainIntent = new Intent(getContext(), MainActivity.class);
-                    isRunning = false;
-                    mContext.startActivity(mainIntent);
-                }
+            if(playX1 < x && x < playX2 && playY1 < y && y < playY2){
+                Intent mainIntent = new Intent(getContext(), MainActivity.class);
+                isRunning = false;
+                mContext.startActivity(mainIntent);
             }
-
-
         }
+
         return true;
     }
 
@@ -243,36 +214,19 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
 
         //mPaint.setTypeface(typeface);
 
-        if(helpFlag){
-            mPaint.setTextSize(40 * scale);
-            canvas.drawText("THIS IS HELP", displayX / 4, displayY / 4, mPaint);
-            mPaint.setTextSize(30 * scale);
-            canvas.drawText("Just Touch! HAHAHA!", displayX / 4, displayY / 4 + 40 * scale, mPaint);
-            canvas.drawText("Have fun !!", displayX / 4, displayY / 4 + 80 * scale, mPaint);
-            canvas.drawText("Tap to continue!!", displayX / 4, displayY / 4 + 120 * scale, mPaint);
+        if(playPushFlag){
+            canvas.drawBitmap(playImage, playSrc, playDst2, mPaint);
         }else{
-
-            if(helpPushFlag){
-                canvas.drawBitmap(helpImage, helpSrc, helpDst2, mPaint);
-            }else{
-                canvas.drawBitmap(helpImage, helpSrc, helpDst, mPaint);
-            }
-
-            if(playPushFlag){
-                canvas.drawBitmap(playImage, playSrc, playDst2, mPaint);
-            }else{
-                canvas.drawBitmap(playImage, playSrc, playDst, mPaint);
-            }
-
-            mPaint.setTextSize(50 * scale);
-            canvas.drawText("PON", displayX * 1 / 4, displayY * 1 / 3 - 52 * scale, mPaint);
-            canvas.drawText("SHOOTING", displayX * 1 / 4, displayY * 1 / 3, mPaint);
-            mPaint.setTextSize(30 * scale);
-            canvas.drawText("HIGHSCORE:" + highScore, displayX / 4, displayY / 3 + 30 * scale + 5, mPaint);
-
+            canvas.drawBitmap(playImage, playSrc, playDst, mPaint);
         }
 
-        canvas.drawText("developed by masaponto", 0, displayY - 40 * scale, mPaint);
+        mPaint.setTextSize(50 * scale);
+        canvas.drawText("PON", displayX * 1 / 4 * scale, displayY * 1 / 3 - 52 * scale, mPaint);
+        canvas.drawText("SHOOTING", displayX * 1 / 4 * scale, displayY * 1 / 3 * scale, mPaint);
+        mPaint.setTextSize(30 * scale);
+        canvas.drawText("HIGHSCORE:" + highScore, displayX / 4 * scale, displayY / 3 + 30 * scale + 5, mPaint);
+
+        canvas.drawText("developed by masaponto", 0, (displayY - 50) * scale, mPaint);
     }
 
     public int loadHighScore(Context context){
