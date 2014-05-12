@@ -39,7 +39,7 @@ public class OverActivity extends Activity{
 
         super.onCreate(savedInstanceState);
         String score = "" + getIntent().getIntExtra("score", 0);
-        OverSurfaceView mSurfaceView = new OverSurfaceView( this, displayX, displayY, score);
+        OverSurfaceView mSurfaceView = new OverSurfaceView(this, displayX, displayY, score);
         setContentView(mSurfaceView);
     }
 
@@ -49,12 +49,12 @@ public class OverActivity extends Activity{
     }
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction()==KeyEvent.ACTION_DOWN) {
-            switch (event.getKeyCode()) {
+    public boolean dispatchKeyEvent(KeyEvent event){
+        if(event.getAction() == KeyEvent.ACTION_DOWN){
+            switch(event.getKeyCode()){
                 case KeyEvent.KEYCODE_BACK:
                     // 終了していいか、ダイアログで確認
-                    showDialog(OverActivity.this,"Quit game","Are you sure you want to quit?");
+                    showDialog(OverActivity.this, "Quit game", "Are you sure you want to quit?");
                     return true;
             }
         }
@@ -63,17 +63,17 @@ public class OverActivity extends Activity{
 
 
     //ダイアログ
-    private void showDialog(Context context,String title,String text) {
+    private void showDialog(Context context, String title, String text){
         AlertDialog ad = new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(text)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int whichButton){
                         finish(); //終了
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
+                .setNegativeButton("No", new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int whichButton){
 
                     }
                 })
@@ -83,12 +83,12 @@ public class OverActivity extends Activity{
 
 }
 
-class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runnable {
+class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runnable{
 
     int displayX, displayY;
     String score;
     int nowScore;
-    int  highScore = 0;
+    int highScore = 0;
 
     private boolean isRunning = true;
     private Thread thread;
@@ -97,20 +97,20 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
 
     Resources res = getResources();
 
-    Bitmap homeImage = BitmapFactory.decodeResource(res,R.drawable.home);
-    final Rect homeSrc = new Rect(0,0,homeImage.getWidth(),homeImage.getHeight());
-    int homeX1,homeX2,homeY1,homeY2;
-    Rect homeDst,homeDst2;
+    Bitmap homeImage = BitmapFactory.decodeResource(res, R.drawable.home);
+    final Rect homeSrc = new Rect(0, 0, homeImage.getWidth(), homeImage.getHeight());
+    int homeX1, homeX2, homeY1, homeY2;
+    Rect homeDst, homeDst2;
 
-    Bitmap retryImage = BitmapFactory.decodeResource(res,R.drawable.retry);
-    final Rect retrySrc = new Rect(0,0,retryImage.getWidth(),retryImage.getHeight());
-    int retryX1,retryX2,retryY1,retryY2;
-    Rect retryDst,retryDst2;
+    Bitmap retryImage = BitmapFactory.decodeResource(res, R.drawable.retry);
+    final Rect retrySrc = new Rect(0, 0, retryImage.getWidth(), retryImage.getHeight());
+    int retryX1, retryX2, retryY1, retryY2;
+    Rect retryDst, retryDst2;
 
-    Bitmap twitImage = BitmapFactory.decodeResource(res,R.drawable.twit);
-    final Rect twitSrc = new Rect(0,0,twitImage.getWidth(),twitImage.getHeight());
-    int twitX1,twitX2,twitY1,twitY2;
-    Rect twitDst,twitDst2;
+    Bitmap twitImage = BitmapFactory.decodeResource(res, R.drawable.twit);
+    final Rect twitSrc = new Rect(0, 0, twitImage.getWidth(), twitImage.getHeight());
+    int twitX1, twitX2, twitY1, twitY2;
+    Rect twitDst, twitDst2;
 
     boolean homePushFlag = false;
     boolean retryPushFlag = false;
@@ -130,33 +130,33 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
 
         scale = displayX / 480;
 
-        homeX1 = displayX/16;
-        homeY1 = displayY*2/3;
-        homeX2 = displayX*5/16;
-        homeY2 = displayY*2/3 + displayX*1/4;
-        homeDst = new Rect( homeX1, homeY1, homeX2, homeY2);
-        homeDst2 = new Rect( homeX1, homeY1 + displayX/100, homeX2, homeY2 + displayX/100);
+        homeX1 = displayX / 16;
+        homeY1 = displayY * 2 / 3;
+        homeX2 = displayX * 5 / 16;
+        homeY2 = displayY * 2 / 3 + displayX * 1 / 4;
+        homeDst = new Rect(homeX1, homeY1, homeX2, homeY2);
+        homeDst2 = new Rect(homeX1, homeY1 + displayX / 100, homeX2, homeY2 + displayX / 100);
 
-        retryX1 = displayX*6/16;
-        retryY1 = displayY*2/3;
-        retryX2 = displayX*10/16;
-        retryY2 = displayY*2/3 + displayX*1/4;
-        retryDst = new Rect( retryX1, retryY1, retryX2, retryY2);
-        retryDst2 = new Rect( retryX1, retryY1 + displayX/100, retryX2, retryY2 + displayX/100);
+        retryX1 = displayX * 6 / 16;
+        retryY1 = displayY * 2 / 3;
+        retryX2 = displayX * 10 / 16;
+        retryY2 = displayY * 2 / 3 + displayX * 1 / 4;
+        retryDst = new Rect(retryX1, retryY1, retryX2, retryY2);
+        retryDst2 = new Rect(retryX1, retryY1 + displayX / 100, retryX2, retryY2 + displayX / 100);
 
-        twitX1 = displayX*11/16;
-        twitY1 = displayY*2/3;
-        twitX2 = displayX*15/16;
-        twitY2 = displayY*2/3 + displayX*1/4;
-        twitDst = new Rect( twitX1, twitY1, twitX2, twitY2);
-        twitDst2 = new Rect( twitX1, twitY1 + displayX/100, twitX2, twitY2 + displayX/100);
+        twitX1 = displayX * 11 / 16;
+        twitY1 = displayY * 2 / 3;
+        twitX2 = displayX * 15 / 16;
+        twitY2 = displayY * 2 / 3 + displayX * 1 / 4;
+        twitDst = new Rect(twitX1, twitY1, twitX2, twitY2);
+        twitDst2 = new Rect(twitX1, twitY1 + displayX / 100, twitX2, twitY2 + displayX / 100);
 
-      //  typeface = Typeface.createFromAsset(getContext().getAssets(), "Pigmo-00_pilot.ttf");
+        //  typeface = Typeface.createFromAsset(getContext().getAssets(), "Pigmo-00_pilot.ttf");
 
         setFocusable(true);
         getHolder().addCallback(this);
 
-        calcHighScore(context,score);
+        calcHighScore(context, score);
 
     }
 
@@ -165,7 +165,7 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
         nowScore = Integer.parseInt(score);
         highScore = loadHighScore(context);
 
-        if( nowScore > highScore ){
+        if(nowScore > highScore){
             saveHighScore(context, nowScore);
         }
 
@@ -203,8 +203,8 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
             retryPushFlag = false;
             twitPushFlag = false;
 
-            if(homeX1 < x && x < homeX2 && homeY1< y && y < homeY2){
-                Intent title = new Intent(getContext(),TitleActivity.class);
+            if(homeX1 < x && x < homeX2 && homeY1 < y && y < homeY2){
+                Intent title = new Intent(getContext(), TitleActivity.class);
                 isRunning = false;
                 //thread = null;
                 title.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -212,8 +212,8 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
                 mContext.startActivity(title);
             }
 
-            if(retryX1 < x && x < retryX2 && retryY1< y && y < retryY2){
-                Intent mainIntent = new Intent(getContext(),MainActivity.class);
+            if(retryX1 < x && x < retryX2 && retryY1 < y && y < retryY2){
+                Intent mainIntent = new Intent(getContext(), MainActivity.class);
                 isRunning = false;
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -221,7 +221,7 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
                 mContext.startActivity(mainIntent);
             }
 
-            if(twitX1 < x && x < twitX2 && twitY1< y && y < twitY2){
+            if(twitX1 < x && x < twitX2 && twitY1 < y && y < twitY2){
                 try{
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     //intent.setClassName("com.twitter.android","com.twitter.android.PostActivity");
@@ -231,7 +231,7 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
                     mContext.startActivity(intent);
                 }catch(Exception e){
                     Uri uri = Uri.parse("market://search?q=com.twitter.android");
-                    Intent marketIntent=new Intent(Intent.ACTION_VIEW,uri);
+                    Intent marketIntent = new Intent(Intent.ACTION_VIEW, uri);
                     mContext.startActivity(marketIntent);
                 }
             }
@@ -242,7 +242,7 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
     }
 
 
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height ){
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){
     }
 
     public void surfaceCreated(SurfaceHolder holder){
@@ -253,9 +253,9 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
 
     public void surfaceDestroyed(SurfaceHolder holder){
         isRunning = false;
-        try {
+        try{
             thread.join();
-        } catch(InterruptedException ex) {
+        }catch(InterruptedException ex){
         }
         thread = null;
     }
@@ -269,9 +269,10 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
             getHolder().unlockCanvasAndPost(canvas);
         }
 
-        try {
+        try{
             Thread.sleep(10);//お決まり
-        } catch (Exception e){}
+        }catch(Exception e){
+        }
 
     }
 
@@ -279,16 +280,16 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
 
         canvas.drawColor(Color.WHITE);
         mPaint.setColor(Color.WHITE);
-       // mPaint.setTypeface(typeface);
-        mPaint.setColor(Color .BLACK);
+        // mPaint.setTypeface(typeface);
+        mPaint.setColor(Color.BLACK);
 
         mPaint.setTextSize(60 * scale);
-        canvas.drawText("GameOver", displayX/5, displayY/2 - 70 * scale, mPaint);
+        canvas.drawText("GameOver", displayX / 5, displayY / 2 - 70 * scale, mPaint);
 
         mPaint.setTextSize(40 * scale);
-        canvas.drawText("SCORE:" + score, displayX/4 , displayY/2, mPaint);
+        canvas.drawText("SCORE:" + score, displayX / 4, displayY / 2, mPaint);
 
-        canvas.drawText("HIGHSCORE:" + highScore, displayX/4 , displayY/2+70, mPaint);
+        canvas.drawText("HIGHSCORE:" + highScore, displayX / 4, displayY / 2 + 70, mPaint);
 
         if(homePushFlag){
             canvas.drawBitmap(homeImage, homeSrc, homeDst2, mPaint);
@@ -310,19 +311,19 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
 
 
         mPaint.setTextSize(30 * scale);
-        mPaint.setColor(Color .BLACK);
+        mPaint.setColor(Color.BLACK);
 
     }
 
     public void saveHighScore(Context mcontext, int score){
 
-        SharedPreferences pref = mcontext.getSharedPreferences( "HighScore", Context.MODE_WORLD_READABLE );
+        SharedPreferences pref = mcontext.getSharedPreferences("HighScore", Context.MODE_WORLD_READABLE);
 
         // プリファレンスに書き込むためのEditorオブジェクト取得 //
         SharedPreferences.Editor editor = pref.edit();
 
         // "user_name" というキーで名前を登録
-        editor.putInt( "HighScore", score);
+        editor.putInt("HighScore", score);
 
         // 書き込みの確定（実際にファイルに書き込む）
         editor.commit();
@@ -330,11 +331,11 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
     }
 
 
-    public int loadHighScore( Context context ){
+    public int loadHighScore(Context context){
         // プリファレンスの準備 //
-        SharedPreferences pref = context.getSharedPreferences( "HighScore", Context.MODE_WORLD_READABLE );
+        SharedPreferences pref = context.getSharedPreferences("HighScore", Context.MODE_WORLD_READABLE);
 
-        return pref.getInt( "HighScore", 0 );
+        return pref.getInt("HighScore", 0);
     }
 
 
