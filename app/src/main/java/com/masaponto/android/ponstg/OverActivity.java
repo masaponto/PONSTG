@@ -1,4 +1,4 @@
-package com.example.app;
+package com.masaponto.android.ponstg;
 
 import android.app.Activity;
 
@@ -17,7 +17,6 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -25,9 +24,6 @@ import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.Display;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class OverActivity extends Activity{
 
