@@ -1,4 +1,4 @@
-package com.example.app;
+package com.masaponto.android.ponstg;
 
 import android.app.Activity;
 
@@ -14,9 +14,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -24,10 +22,6 @@ import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.Display;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class TitleActivity extends Activity{
 

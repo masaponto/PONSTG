@@ -1,4 +1,4 @@
-package com.example.app;
+package com.masaponto.android.ponstg;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -27,7 +27,6 @@ import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
