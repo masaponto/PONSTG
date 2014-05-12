@@ -31,11 +31,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class MainActivity extends Activity
-{
+public class MainActivity extends Activity{
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
 
         super.onCreate(savedInstanceState);
 
@@ -59,8 +58,7 @@ public class MainActivity extends Activity
 
 }
 
-class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runnable
-{
+class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runnable{
 
     //画面の大きさ
     int displayX;
@@ -118,18 +116,18 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
     //画像
     Bitmap charaImage = BitmapFactory.decodeResource(res, R.drawable.chara);
-    Bitmap enemyImage = BitmapFactory.decodeResource(res,R.drawable.enemy);
+    Bitmap enemyImage = BitmapFactory.decodeResource(res, R.drawable.enemy);
 
-    Bitmap explotionImage = BitmapFactory.decodeResource(res,R.drawable.explotion);
+    Bitmap explotionImage = BitmapFactory.decodeResource(res, R.drawable.explotion);
 
-    Bitmap pauseImage = BitmapFactory.decodeResource(res,R.drawable.pause);
-    final Rect pauseSrc = new Rect(0,0,pauseImage.getWidth(),pauseImage.getHeight());
-    int pauseX1,pauseX2,pauseY1,pauseY2;
-    Rect pauseDst,pauseDst2;
+    Bitmap pauseImage = BitmapFactory.decodeResource(res, R.drawable.pause);
+    final Rect pauseSrc = new Rect(0, 0, pauseImage.getWidth(), pauseImage.getHeight());
+    int pauseX1, pauseX2, pauseY1, pauseY2;
+    Rect pauseDst, pauseDst2;
     boolean pausePushFlag = false;
 
     Bitmap playImage = BitmapFactory.decodeResource(res, R.drawable.play);
-    final Rect playSrc = new Rect(0,0,playImage.getWidth(),playImage.getHeight());
+    final Rect playSrc = new Rect(0, 0, playImage.getWidth(), playImage.getHeight());
     boolean playPushFlag = false;
 
     //音
@@ -141,7 +139,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
     Typeface typeface;
 
-    public MySurfaceView(Context context,int x,int y){
+    public MySurfaceView(Context context, int x, int y){
         super(context);
         mContext = context;
 
@@ -161,12 +159,12 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         displayY = y;
 
         //ポーズボタンの画像の描画サイズ
-        pauseX1 = displayX - displayX/5;
+        pauseX1 = displayX - displayX / 5;
         pauseY1 = 0;
         pauseX2 = displayX;
-        pauseY2 = displayX/5;
-        pauseDst = new Rect( pauseX1, pauseY1, pauseX2, pauseY2);
-        pauseDst2 = new Rect( pauseX1, pauseY1 + displayX/100, pauseX2, pauseY2 + displayX/100);
+        pauseY2 = displayX / 5;
+        pauseDst = new Rect(pauseX1, pauseY1, pauseX2, pauseY2);
+        pauseDst2 = new Rect(pauseX1, pauseY1 + displayX / 100, pauseX2, pauseY2 + displayX / 100);
 
         //画面の割合を横480を基準にする
         scale = displayX / 480;
@@ -175,12 +173,12 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
     }
 
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height ){
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){
     }
 
     public void surfaceCreated(SurfaceHolder holder){
 
-        chara = new Chara(charaImage, displayX, displayY, displayX/11, displayY/11, scale);
+        chara = new Chara(charaImage, displayX, displayY, displayX / 11, displayY / 11, scale);
 
         charaBeam = new CharaBeam[N];
         for(int i = 0; i < N; i++){
@@ -196,9 +194,9 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
         sp.release();
         isRunning = false;
-        try {
+        try{
             thread.join();
-        } catch(InterruptedException ex) {
+        }catch(InterruptedException ex){
         }
         thread = null;
 
@@ -220,11 +218,10 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 charaCenterX = chara.getCenterX();
                 charaCenterY = chara.getCenterY();
 
-                if(pauseX1 < touchX && touchX < pauseX2 && pauseY1< touchY && touchY < pauseY2){
+                if(pauseX1 < touchX && touchX < pauseX2 && pauseY1 < touchY && touchY < pauseY2){
                     pausePushFlag = true;
                     playPushFlag = true;
-                }
-                else{
+                }else{
                     if(!pauseFlag){
                         touchFlag = true;
                     }
@@ -238,7 +235,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 touchX2 = (int) event.getX();
                 touchY2 = (int) event.getY();
 
-                if(!pauseFlag) {
+                if(!pauseFlag){
                     chara.move(charaCenterX - (touchX - touchX2), charaCenterY - (touchY - touchY2));
                 }
             }
@@ -249,14 +246,13 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 touchFlag = false;
 
                 if(pauseFlag){
-                    if (pauseX1 < touchX2 && touchX2 < pauseX2 && pauseY1 < touchY2 && touchY2 < pauseY2) {
+                    if(pauseX1 < touchX2 && touchX2 < pauseX2 && pauseY1 < touchY2 && touchY2 < pauseY2){
                         pauseFlag = false;
                     }
-                }
-                else {
-                    if (pauseX1 < touchX2 && touchX2 < pauseX2 && pauseY1 < touchY2 && touchY2 < pauseY2) {
+                }else{
+                    if(pauseX1 < touchX2 && touchX2 < pauseX2 && pauseY1 < touchY2 && touchY2 < pauseY2){
                         pauseFlag = true;
-                        showDialog(mContext,"Paused");
+                        showDialog(mContext, "Paused");
                     }
                 }
 
@@ -267,31 +263,31 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean onKeyDown(int keyCode, KeyEvent event){
         super.onKeyDown(keyCode, event);
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_BACK:
-                    pauseFlag = true;
-                    // 終了していいか、ダイアログで確認
-                    showDialog(mContext,"Paused");
-                    break;
-            }
+        switch(keyCode){
+            case KeyEvent.KEYCODE_BACK:
+                pauseFlag = true;
+                // 終了していいか、ダイアログで確認
+                showDialog(mContext, "Paused");
+                break;
+        }
         return true;
     }
 
     //ダイアログ
-    private void showDialog(Context context,String title) {
-        AlertDialog.Builder alertDialog=new AlertDialog.Builder(mContext);
+    private void showDialog(Context context, String title){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
         // ダイアログの設定
         alertDialog.setTitle(title);      //タイトル設定
 
         // OK(肯定的な)ボタンの設定
-        alertDialog.setPositiveButton("Restart", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
+        alertDialog.setPositiveButton("Restart", new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int which){
                 // OKボタン押下時の処理
                 Log.d("AlertDialog", "Positive which :" + which);
-                Intent title = new Intent(getContext(),TitleActivity.class);
+                Intent title = new Intent(getContext(), TitleActivity.class);
                 title.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 title.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 isRunning = false;
@@ -301,8 +297,8 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         });
 
         // SKIP(中立的な)ボタンの設定
-        alertDialog.setNeutralButton("Resume", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
+        alertDialog.setNeutralButton("Resume", new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int which){
                 // SKIPボタン押下時の処理
                 Log.d("AlertDialog", "Neutral which :" + which);
                 pauseFlag = false;
@@ -310,11 +306,11 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         });
 
         // NG(否定的な)ボタンの設定
-        alertDialog.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
+        alertDialog.setNegativeButton("Exit", new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int which){
                 // NGボタン押下時の処理
                 Log.d("AlertDialog", "Negative which :" + which);
-                Intent mainIntent = new Intent(getContext(),MainActivity.class);
+                Intent mainIntent = new Intent(getContext(), MainActivity.class);
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 isRunning = false;
@@ -326,7 +322,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         // ダイアログの作成と描画
         alertDialog.show();
     }
-
 
 
     public void run(){
@@ -341,8 +336,8 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
         final int explotionSpeed = 5;
 
-        final int enemyR = displayX/11;
-        final int charaR = displayX/20;
+        final int enemyR = displayX / 11;
+        final int charaR = displayX / 20;
 
         boolean overFlag = false;
 
@@ -351,15 +346,15 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
             Canvas canvas = getHolder().lockCanvas();
 
-            if(canvas != null) {
+            if(canvas != null){
 
-                if(!pauseFlag) {
+                if(!pauseFlag){
                     count++;
 
-                    if(!hitFlag) {
+                    if(!hitFlag){
 
                         enemyMoveSpeed = (score / 15) + 4;
-                        enemyIncidence = 60 - (score / 15 ) * 8;
+                        enemyIncidence = 60 - (score / 15) * 8;
                         if(enemyIncidence < 10){
                             enemyIncidence = 10;
                         }
@@ -377,13 +372,13 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
                     addBeam(count);
 
-                    overTime =  moveEnemy(charaR, overTime, count);
+                    overTime = moveEnemy(charaR, overTime, count);
                     overTime = moveEnemyBeam(charaR, overTime, count);
-                    moveCharaBeam(enemyR,count);
+                    moveCharaBeam(enemyR, count);
 
                     removeEnemy();
 
-                    bom(explotionSpeed,count);
+                    bom(explotionSpeed, count);
 
                 }
 
@@ -404,17 +399,18 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         }
 
 
-        try {
+        try{
             Thread.sleep(10);//お決まり
-        } catch (Exception e){}
+        }catch(Exception e){
+        }
     }
 
 
-    public void addBeam(int count){
+    private void addBeam(int count){
         //beamを出す
         if(touchFlag && count % 10 == 0){
             if(!charaBeam[beamCount].CharaBeamFlag){
-               sp.play(beamSoundId, 1.0F, 1.0F, 0, 0, 1.0F);
+                sp.play(beamSoundId, 1.0F, 1.0F, 0, 0, 1.0F);
             }
             charaBeam[beamCount].CharaBeamFlag = true;
             beamCount = (beamCount + 1) % N;
@@ -422,24 +418,24 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     }
 
 
-    public void addEnemy(int count, int moveSpeed, int incidence){
-        if(count % (incidence / scale) == 0) {
+    private void addEnemy(int count, int moveSpeed, int incidence){
+        if(count % (incidence / scale) == 0){
             Random rnd = new Random();
-            int ran = rnd.nextInt(displayX - (displayX/11));
-            enemys.add(new Enemy(enemyImage, ran, 0, displayX, displayY, displayX/11, displayX/11, scale, moveSpeed));
+            int ran = rnd.nextInt(displayX - (displayX / 11));
+            enemys.add(new Enemy(enemyImage, ran, 0, displayX, displayY, displayX / 11, displayX / 11, scale, moveSpeed));
         }
     }
 
-    public void addEnemyBeam(int count, int incidence, int moveSpeed){
-        if(count % incidence == 0 && !enemys.isEmpty()) {
-            for(int i = 0; i < enemys.size(); i++) {
+    private void addEnemyBeam(int count, int incidence, int moveSpeed){
+        if(count % incidence == 0 && !enemys.isEmpty()){
+            for(int i = 0; i < enemys.size(); i++){
                 enemyBeams.add(new EnemyBeam(enemys.get(i).getCenterX()
                         , enemys.get(i).getCenterY(), chara.getCenterX(), chara.getCenterY(), displayX, scale, moveSpeed));
             }
         }
     }
 
-    public void removeEnemy(){
+    private void removeEnemy(){
         for(int i = 0; i < enemys.size(); i++){
             if(enemys.get(i).deathFlag == true){
                 enemys.remove(i);
@@ -448,10 +444,10 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     }
 
 
-    public int  moveEnemy(int charaR, int overTime, int count){
+    private int moveEnemy(int charaR, int overTime, int count){
         for(int i = 0; i < enemys.size(); i++){
 
-            if(!hitFlag) {
+            if(!hitFlag){
                 enemys.get(i).move();
             }
 
@@ -462,11 +458,11 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
                 hitFlag = true;
 
-                if (overTime == 0) {
+                if(overTime == 0){
                     overTime = count;
                 }
 
-                Log.d("overTime","time" + overTime);
+                Log.d("overTime", "time" + overTime);
 
 
                 explotions.add(new Explotion(explotionImage, chara.getCenterX()
@@ -482,7 +478,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
             }
 
             //画面外に出たらリストから消す
-            if(enemys.get(i).getY() > displayY * 2/3 || enemys.get(i).getCenterX() > displayX || enemys.get(i).getCenterX() < 0 ){
+            if(enemys.get(i).getY() > displayY * 2 / 3 || enemys.get(i).getCenterX() > displayX || enemys.get(i).getCenterX() < 0){
                 enemys.get(i).deathFlag = true;
             }
 
@@ -492,28 +488,25 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     }
 
 
-
-
-    public int  moveEnemyBeam(int charaR, int overTime, int count){
-        for(int i = 0; i < enemyBeams.size(); i++) {
-            if (!hitFlag) {
+    private int moveEnemyBeam(int charaR, int overTime, int count){
+        for(int i = 0; i < enemyBeams.size(); i++){
+            if(!hitFlag){
                 enemyBeams.get(i).move();
             }
-
 
             chara.hitDistance2 = (int) Math.sqrt(Math.pow(chara.getCenterX() - enemyBeams.get(i).getCenterX(), 2)
                     + Math.pow(chara.getCenterY() - enemyBeams.get(i).getCenterY(), 2));
 
-            if (enemyBeams.get(i).getY() > displayY * 2 / 3 || enemyBeams.get(i).getY() < 0
-                    || enemyBeams.get(i).getX() < 0 || enemyBeams.get(i).getX() > displayX) {
+            if(enemyBeams.get(i).getY() > displayY * 2 / 3 || enemyBeams.get(i).getY() < 0
+                    || enemyBeams.get(i).getX() < 0 || enemyBeams.get(i).getX() > displayX){
                 enemyBeams.remove(i);
             }
 
 
-            if (chara.hitDistance2 < charaR) {
+            if(chara.hitDistance2 < charaR){
                 hitFlag = true;
 
-                if (overTime == 0) {
+                if(overTime == 0){
                     overTime = count;
                 }
 
@@ -533,20 +526,20 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
 
     public void moveCharaBeam(int enemyR, int count){
-        for (int i = 0; i < N; i++) {
-            if (charaBeam[i].CharaBeamFlag) {
+        for(int i = 0; i < N; i++){
+            if(charaBeam[i].CharaBeamFlag){
                 charaBeam[i].isDead = false;
 
-                if (!hitFlag) {
+                if(!hitFlag){
                     charaBeam[i].move();
                 }
 
-                for (int j = 0; j < enemys.size(); j++) {
+                for(int j = 0; j < enemys.size(); j++){
                     enemys.get(j).hitDistance = Math.sqrt(Math.pow((enemys.get(j).getCenterX() - charaBeam[i].getCenterX()), 2)
                             + Math.pow((enemys.get(j).getCenterY() - charaBeam[i].getCenterY()), 2));
 
                     //ビームの当たり判定
-                    if (enemys.get(j).hitDistance < enemyR) {
+                    if(enemys.get(j).hitDistance < enemyR){
 
                         score++;
 
@@ -568,25 +561,22 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     }
 
 
-
-
     public void bom(int explotionSpeed, int count){
         //爆発処理
-        for (int i = 0; i < explotions.size(); i++) {
+        for(int i = 0; i < explotions.size(); i++){
 
-            for (int j = 1; j < 10; j++) {
-                if (explotions.get(i).count + explotionSpeed * j < count) {
+            for(int j = 1; j < 10; j++){
+                if(explotions.get(i).count + explotionSpeed * j < count){
                     explotions.get(i).exSwitch = j;
                 }
             }
 
-            if (explotions.get(i).count + explotionSpeed * 10 < count) {
+            if(explotions.get(i).count + explotionSpeed * 10 < count){
                 explotions.remove(i);
             }
 
         }
     }
-
 
 
     private void drawGame(Canvas canvas, Paint mPaint){
@@ -604,7 +594,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
         for(int i = 0; i < N; i++){
             charaBeam[i].drawMove(canvas, chara.getCenterX() - charaBeam[i].getRadius() / 2
-                    , chara.getCenterY() - (displayX/11)/2 + charaBeam[i].getRadius());
+                    , chara.getCenterY() - (displayX / 11) / 2 + charaBeam[i].getRadius());
         }
 
         if(!hitFlag){
@@ -631,15 +621,15 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
         mPaint.setTextSize(50 * scale);
         mPaint.setColor(Color.BLACK);
-        canvas.drawText("SCORE:" + score,0,50 * scale, mPaint);
+        canvas.drawText("SCORE:" + score, 0, 50 * scale, mPaint);
 
-        canvas.drawRect(0,displayY*2/3,displayX,displayY,mPaint);
+        canvas.drawRect(0, displayY * 2 / 3, displayX, displayY, mPaint);
 
     }
 
     private void gameOver(){
         //GameOver画面へ
-        Intent gameOver = new Intent(getContext(),OverActivity.class);
+        Intent gameOver = new Intent(getContext(), OverActivity.class);
         gameOver.putExtra("score", score);
         mContext.startActivity(gameOver);
     }
@@ -647,8 +637,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 }
 
 
-class Chara
-{
+class Chara{
 
     private Bitmap charaImage;
     private Rect charaSrc, charaDst;
@@ -657,7 +646,7 @@ class Chara
 
     public int hitDistance1, hitDistance2;
 
-    private int displayX,displayY;
+    private int displayX, displayY;
 
     private int scale;
     private int sizeX, sizeY;
@@ -672,20 +661,20 @@ class Chara
 
         p = new Point();
         paint = new Paint();
-        charaSrc = new Rect(0,0,charaImage.getWidth(),charaImage.getHeight());
+        charaSrc = new Rect(0, 0, charaImage.getWidth(), charaImage.getHeight());
 
-        init(displayX,displayY);
+        init(displayX, displayY);
     }
 
     private void init(int displayX, int displayY){
-        p.x = displayX/2 - (sizeX)/2;
-        p.y = displayY*2/3 - (sizeY)*3;
-        charaDst = new Rect(p.x,p.y,p.x+sizeX,p.y+sizeY);
+        p.x = displayX / 2 - (sizeX) / 2;
+        p.y = displayY * 2 / 3 - (sizeY) * 3;
+        charaDst = new Rect(p.x, p.y, p.x + sizeX, p.y + sizeY);
     }
 
     public void move(int x, int y){
-        p.x = x - (sizeX)/2;
-        p.y = y - (sizeY)/2;
+        p.x = x - (sizeX) / 2;
+        p.y = y - (sizeY) / 2;
 
         //画面外のでないように処理
         if(p.x < 0){
@@ -697,19 +686,19 @@ class Chara
         if(p.y < 0){
             p.y = 0;
         }
-        if(p.y + (sizeY) > displayY*2/3){
-            p.y = displayY*2/3 - sizeY;
+        if(p.y + (sizeY) > displayY * 2 / 3){
+            p.y = displayY * 2 / 3 - sizeY;
         }
 
-        charaDst = new Rect(p.x,p.y,p.x+sizeX,p.y+sizeY);
+        charaDst = new Rect(p.x, p.y, p.x + sizeX, p.y + sizeY);
     }
 
     public int getCenterX(){
-        return p.x + (sizeX)/2;
+        return p.x + (sizeX) / 2;
     }
 
     public int getCenterY(){
-        return p.y + (sizeY)/2;
+        return p.y + (sizeY) / 2;
     }
 
     public void drawMove(Canvas c){
@@ -719,8 +708,7 @@ class Chara
 }
 
 
-class CharaBeam
-{
+class CharaBeam{
 
     private Point p;
     private int beamCenterX;
@@ -734,14 +722,14 @@ class CharaBeam
     private int charaBeamSpeed;
     private int radius, displayX;
 
-    CharaBeam(int displayX,int scale){
+    CharaBeam(int displayX, int scale){
         this.displayX = displayX;
         this.scale = scale;
         p = new Point();
         paint = new Paint();
         paint.setColor(Color.BLACK);
-        radius = displayX/80;
-        charaBeamSpeed = 5*scale;
+        radius = displayX / 80;
+        charaBeamSpeed = 5 * scale;
     }
 
     private void init(int w, int h){
@@ -751,8 +739,8 @@ class CharaBeam
 
     public void move(){
         p.y -= charaBeamSpeed;
-        beamCenterX = p.x + radius/2;
-        beamCenterY = p.y + radius/2;
+        beamCenterX = p.x + radius / 2;
+        beamCenterY = p.y + radius / 2;
 
         if(p.y < 0){
             isDead = true;
@@ -762,7 +750,7 @@ class CharaBeam
 
     public void drawMove(Canvas c, int w, int h){
         if(isDead){
-            init(w,h);
+            init(w, h);
         }
         c.drawCircle(p.x, p.y, radius, paint);
     }
@@ -770,17 +758,20 @@ class CharaBeam
     public int getCenterX(){
         return beamCenterX;
     }
+
     public int getCenterY(){
         return beamCenterY;
     }
-    public int getRadius() {return radius;}
+
+    public int getRadius(){
+        return radius;
+    }
 
 
 }
 
 
-class Enemy
-{
+class Enemy{
 
     private Bitmap enemyImage;
     private Rect enemySrc, enemyDst;
@@ -819,28 +810,28 @@ class Enemy
         this.sizeY = sizeY;
         this.moveSpeed = moveSpeed;
 
-        enemyCenterX = p.x + (sizeX)/2;
-        enemyCenterY = p.y + (sizeY)/2;
+        enemyCenterX = p.x + (sizeX) / 2;
+        enemyCenterY = p.y + (sizeY) / 2;
 
-        matrix1.postScale(0.1F*scale,0.1F*scale);
+        matrix1.postScale(0.1F * scale, 0.1F * scale);
         matrix2.postRotate(22.5F);
-        matrix2.postScale(0.1F*scale,0.1F*scale);
+        matrix2.postScale(0.1F * scale, 0.1F * scale);
         matrix3.postRotate(45F);
-        matrix3.postScale(0.1F*scale,0.1F*scale);
+        matrix3.postScale(0.1F * scale, 0.1F * scale);
         matrix4.postRotate(67.5F);
-        matrix4.postScale(0.1F*scale,0.1F*scale);
-        enemy1 = Bitmap.createBitmap(enemyImage,0,0,enemyImage.getWidth(),enemyImage.getHeight(),matrix1,true);
-        enemy2 = Bitmap.createBitmap(enemyImage,0,0,enemyImage.getWidth(),enemyImage.getHeight(),matrix2,true);
-        enemy3 = Bitmap.createBitmap(enemyImage,0,0,enemyImage.getWidth(),enemyImage.getHeight(),matrix3,true);
-        enemy4 = Bitmap.createBitmap(enemyImage,0,0,enemyImage.getWidth(),enemyImage.getHeight(),matrix4,true);
+        matrix4.postScale(0.1F * scale, 0.1F * scale);
+        enemy1 = Bitmap.createBitmap(enemyImage, 0, 0, enemyImage.getWidth(), enemyImage.getHeight(), matrix1, true);
+        enemy2 = Bitmap.createBitmap(enemyImage, 0, 0, enemyImage.getWidth(), enemyImage.getHeight(), matrix2, true);
+        enemy3 = Bitmap.createBitmap(enemyImage, 0, 0, enemyImage.getWidth(), enemyImage.getHeight(), matrix3, true);
+        enemy4 = Bitmap.createBitmap(enemyImage, 0, 0, enemyImage.getWidth(), enemyImage.getHeight(), matrix4, true);
 
         count = 0;
     }
 
     public void move(){
         p.y += moveSpeed * scale;
-        enemyCenterX = p.x + (sizeX)/2;
-        enemyCenterY = p.y + (sizeY)/2;
+        enemyCenterX = p.x + (sizeX) / 2;
+        enemyCenterY = p.y + (sizeY) / 2;
     }
 
     public void drawMove(Canvas c){
@@ -870,17 +861,18 @@ class Enemy
         return p.y;
     }
 
-    public int getCenterX() {
-        return  enemyCenterX;
+    public int getCenterX(){
+        return enemyCenterX;
     }
 
-    public int getCenterY() { return  enemyCenterY; }
+    public int getCenterY(){
+        return enemyCenterY;
+    }
 
 }
 
 
-class EnemyBeam
-{
+class EnemyBeam{
 
     private Point p;
     private Paint paint;
@@ -900,24 +892,25 @@ class EnemyBeam
 
         angle = Math.atan2(charaY - h, charaX - w);
         this.scale = scale;
-        radius = displayX/80;
+        radius = displayX / 80;
         this.moveSpeed = moveSpeed;
     }
 
     public void move(){
         p.x += Math.cos(angle) * moveSpeed * scale;
         p.y += Math.sin(angle) * moveSpeed * scale;
-        beamCenterX = p.x + radius/2;
-        beamCenterY = p.y + radius/2;
+        beamCenterX = p.x + radius / 2;
+        beamCenterY = p.y + radius / 2;
     }
 
-    public void drawMove(Canvas c) {
+    public void drawMove(Canvas c){
         c.drawCircle(p.x, p.y, radius, paint);
     }
 
     public int getX(){
         return p.x;
     }
+
     public int getY(){
         return p.y;
     }
@@ -925,6 +918,7 @@ class EnemyBeam
     public int getCenterX(){
         return beamCenterX;
     }
+
     public int getCenterY(){
         return beamCenterY;
     }
@@ -932,8 +926,7 @@ class EnemyBeam
 }
 
 
-class Explotion
-{
+class Explotion{
 
     private Bitmap explotionImage;
 
@@ -946,7 +939,7 @@ class Explotion
     Rect dst;
 
 
-    Explotion(Bitmap explotionImage,int X, int Y, int count){
+    Explotion(Bitmap explotionImage, int X, int Y, int count){
         this.explotionImage = explotionImage;
         int h = explotionImage.getHeight();
         int w = explotionImage.getWidth() / 10;
@@ -957,10 +950,10 @@ class Explotion
         this.count = count;
 
         for(int i = 0; i < 10; i++){
-            srcs[i] = new Rect(i * w, 0, w + i*w, h);
+            srcs[i] = new Rect(i * w, 0, w + i * w, h);
         }
 
-        dst = new Rect(dispX, dispY, dispX + w*3/2, dispY + h*3/2);
+        dst = new Rect(dispX, dispY, dispX + w * 3 / 2, dispY + h * 3 / 2);
 
     }
 

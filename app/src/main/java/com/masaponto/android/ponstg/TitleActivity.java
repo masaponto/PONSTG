@@ -36,7 +36,7 @@ public class TitleActivity extends Activity{
         int displayY = display.getHeight();
 
         super.onCreate(savedInstanceState);
-        TitleSurfaceView mSurfaceView = new TitleSurfaceView( this, displayX, displayY );
+        TitleSurfaceView mSurfaceView = new TitleSurfaceView(this, displayX, displayY);
         setContentView(mSurfaceView);
     }
 
@@ -47,21 +47,20 @@ public class TitleActivity extends Activity{
 
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction()==KeyEvent.ACTION_DOWN) {
+    public boolean dispatchKeyEvent(KeyEvent event){
+        if(event.getAction() == KeyEvent.ACTION_DOWN){
 
             if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
                 // 終了していいか、ダイアログで確認
-                showDialog(TitleActivity.this,"Quit game","Are you sure you want to quit?");
+                showDialog(TitleActivity.this, "Quit game", "Are you sure you want to quit?");
                 return true;
             }
 
             if(event.getKeyCode() == KeyEvent.KEYCODE_HOME){
                 // 終了していいか、ダイアログで確認
-                showDialog(TitleActivity.this,"Quit game","Are you sure you want to quit?");
+                showDialog(TitleActivity.this, "Quit game", "Are you sure you want to quit?");
                 return true;
             }
-
 
 
         }
@@ -70,17 +69,17 @@ public class TitleActivity extends Activity{
 
 
     //ダイアログ
-    private void showDialog(Context context,String title,String text) {
+    private void showDialog(Context context, String title, String text){
         AlertDialog ad = new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(text)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int whichButton){
                         finish(); //終了
                     }
                 })
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
+                .setNegativeButton("NO", new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int whichButton){
 
                     }
                 })
@@ -90,7 +89,7 @@ public class TitleActivity extends Activity{
 
 }
 
-class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runnable {
+class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runnable{
 
     int displayX, displayY;
 
@@ -101,14 +100,14 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
     Resources res = getResources();
 
     Bitmap helpImage = BitmapFactory.decodeResource(res, R.drawable.help);
-    final Rect helpSrc = new Rect(0,0,helpImage.getWidth(),helpImage.getHeight());
-    int helpX1,helpX2,helpY1,helpY2;
-    Rect helpDst,helpDst2;
+    final Rect helpSrc = new Rect(0, 0, helpImage.getWidth(), helpImage.getHeight());
+    int helpX1, helpX2, helpY1, helpY2;
+    Rect helpDst, helpDst2;
 
     Bitmap playImage = BitmapFactory.decodeResource(res, R.drawable.play);
-    final Rect playSrc = new Rect(0,0,playImage.getWidth(),playImage.getHeight());
-    int playX1,playX2,playY1,playY2;
-    Rect playDst,playDst2;
+    final Rect playSrc = new Rect(0, 0, playImage.getWidth(), playImage.getHeight());
+    int playX1, playX2, playY1, playY2;
+    Rect playDst, playDst2;
 
     boolean helpPushFlag = false;
     boolean playPushFlag = false;
@@ -120,7 +119,7 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
 
     int scale;
 
-    public TitleSurfaceView(Context context,int x,int y){
+    public TitleSurfaceView(Context context, int x, int y){
         super(context);
 
         mContext = context;
@@ -130,19 +129,19 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
 
         scale = displayX / 480;
 
-        helpX1 = displayX*1/3 - displayX*1/4;
-        helpY1 = displayY*2/3;
-        helpX2 = displayX*1/3;
-        helpY2 = displayY*2/3 + displayX*1/4;
-        helpDst = new Rect( helpX1, helpY1, helpX2, helpY2);
-        helpDst2 = new Rect( helpX1, helpY1 + displayX/100, helpX2, helpY2 + displayX/100);
+        helpX1 = displayX * 1 / 3 - displayX * 1 / 4;
+        helpY1 = displayY * 2 / 3;
+        helpX2 = displayX * 1 / 3;
+        helpY2 = displayY * 2 / 3 + displayX * 1 / 4;
+        helpDst = new Rect(helpX1, helpY1, helpX2, helpY2);
+        helpDst2 = new Rect(helpX1, helpY1 + displayX / 100, helpX2, helpY2 + displayX / 100);
 
-        playX1 = displayX*2/3 - displayX*1/4;
-        playY1 = displayY*2/3;
-        playX2 = displayX*2/3;
-        playY2 = displayY*2/3 + displayX*1/4;
-        playDst = new Rect( playX1, playY1, playX2, playY2);
-        playDst2 = new Rect( playX1, playY1 + displayX/100, playX2, playY2 + displayX/100);
+        playX1 = displayX * 2 / 3 - displayX * 1 / 4;
+        playY1 = displayY * 2 / 3;
+        playX2 = displayX * 2 / 3;
+        playY2 = displayY * 2 / 3 + displayX * 1 / 4;
+        playDst = new Rect(playX1, playY1, playX2, playY2);
+        playDst2 = new Rect(playX1, playY1 + displayX / 100, playX2, playY2 + displayX / 100);
 
         //typeface = Typeface.createFromAsset(getContext().getAssets(), "Pigmo-00_pilot.ttf");
 
@@ -158,9 +157,9 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
         int x = (int) event.getX();
         int y = (int) event.getY();
 
-        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+        if(event.getAction() == MotionEvent.ACTION_DOWN){
 
-            if(!helpFlag) {
+            if(!helpFlag){
                 if(helpX1 < x && x < helpX2 && helpY1 < y && y < helpY2){
                     helpPushFlag = true;
                 }
@@ -178,9 +177,7 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
 
             if(helpFlag){
                 helpFlag = false;
-            }
-
-            else{
+            }else{
                 if(helpX1 < x && x < helpX2 && helpY1 < y && y < helpY2){
                     helpFlag = true;
                 }
@@ -198,7 +195,7 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
     }
 
 
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height ){
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){
     }
 
     public void surfaceCreated(SurfaceHolder holder){
@@ -209,9 +206,9 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
 
     public void surfaceDestroyed(SurfaceHolder holder){
         isRunning = false;
-        try {
+        try{
             thread.join();
-        } catch(InterruptedException ex) {
+        }catch(InterruptedException ex){
         }
         thread = null;
     }
@@ -226,14 +223,15 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
             Canvas canvas = getHolder().lockCanvas();
             count++;
 
-            draw(canvas,mPaint,count);
+            draw(canvas, mPaint, count);
             getHolder().unlockCanvasAndPost(canvas);
 
         }
 
-        try {
+        try{
             Thread.sleep(10);//お決まり
-        } catch (Exception e){}
+        }catch(Exception e){
+        }
 
     }
 
@@ -241,20 +239,18 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
 
         canvas.drawColor(Color.WHITE);
         mPaint.setTextSize(30 * scale);
-        mPaint.setColor(Color .BLACK);
+        mPaint.setColor(Color.BLACK);
 
         //mPaint.setTypeface(typeface);
 
         if(helpFlag){
             mPaint.setTextSize(40 * scale);
-            canvas.drawText("THIS IS HELP",displayX/4,displayY/4, mPaint);
+            canvas.drawText("THIS IS HELP", displayX / 4, displayY / 4, mPaint);
             mPaint.setTextSize(30 * scale);
-            canvas.drawText("Just Touch! HAHAHA!",displayX/4,displayY/4 + 40 * scale, mPaint);
-            canvas.drawText("Have fun !!",displayX/4,displayY/4 + 80 * scale,mPaint);
-            canvas.drawText("Tap to continue!!",displayX/4,displayY/4 + 120 * scale,mPaint);
-        }
-
-        else{
+            canvas.drawText("Just Touch! HAHAHA!", displayX / 4, displayY / 4 + 40 * scale, mPaint);
+            canvas.drawText("Have fun !!", displayX / 4, displayY / 4 + 80 * scale, mPaint);
+            canvas.drawText("Tap to continue!!", displayX / 4, displayY / 4 + 120 * scale, mPaint);
+        }else{
 
             if(helpPushFlag){
                 canvas.drawBitmap(helpImage, helpSrc, helpDst2, mPaint);
@@ -269,21 +265,21 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
             }
 
             mPaint.setTextSize(50 * scale);
-            canvas.drawText("PON",displayX*1/4, displayY*1/3 - 52 * scale, mPaint);
-            canvas.drawText("SHOOTING",displayX*1/4, displayY*1/3, mPaint);
+            canvas.drawText("PON", displayX * 1 / 4, displayY * 1 / 3 - 52 * scale, mPaint);
+            canvas.drawText("SHOOTING", displayX * 1 / 4, displayY * 1 / 3, mPaint);
             mPaint.setTextSize(30 * scale);
-            canvas.drawText("HIGHSCORE:" + highScore, displayX/4 , displayY/3 + 30*scale + 5, mPaint);
+            canvas.drawText("HIGHSCORE:" + highScore, displayX / 4, displayY / 3 + 30 * scale + 5, mPaint);
 
         }
 
-        canvas.drawText("developed by masaponto",0,displayY - 40 * scale, mPaint);
+        canvas.drawText("developed by masaponto", 0, displayY - 40 * scale, mPaint);
     }
 
-    public int loadHighScore( Context context ){
+    public int loadHighScore(Context context){
         // プリファレンスの準備 //
-        SharedPreferences pref = context.getSharedPreferences( "HighScore", Context.MODE_WORLD_READABLE );
+        SharedPreferences pref = context.getSharedPreferences("HighScore", Context.MODE_WORLD_READABLE);
 
-        return pref.getInt( "HighScore", 0 );
+        return pref.getInt("HighScore", 0);
     }
 
 }
