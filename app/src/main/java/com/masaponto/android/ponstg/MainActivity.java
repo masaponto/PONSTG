@@ -71,7 +71,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     private Chara chara;
 
     //ビームの数
-    final int N = 5;
+    final int N = 20;
 
     //ビーム発射ループ用カウンタ
     int beamCount = 0;
@@ -140,7 +140,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     //画面の比率
     int scale;
 
-    Typeface typeface;
+    //Typeface typeface;
 
     public MySurfaceView(Context context, int x, int y){
         super(context);
@@ -286,32 +286,14 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         alertDialog.setTitle(title);      //タイトル設定
 
         // OK(肯定的な)ボタンの設定
-        alertDialog.setPositiveButton("Restart", new DialogInterface.OnClickListener(){
+        alertDialog.setPositiveButton("Resume", new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialog, int which){
                 // OKボタン押下時の処理
-                //Log.d("AlertDialog", "Positive which :" + which);
-                //Intent title = new Intent(getContext(), MainActivity.class);
-                //title.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                //title.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                //isRunning = false;
-                //thread = null;
-                //mContext.startActivity(title);
-                // SKIPボタン押下時の処理
                 Log.d("AlertDialog", "Neutral which :" + which);
                 pauseFlag = false;
-
-                //gameInit();
             }
         });
 
-        // SKIP(中立的な)ボタンの設定
-        /*alertDialog.setNeutralButton("Resume", new DialogInterface.OnClickListener(){
-            public void onClick(DialogInterface dialog, int which){
-                // SKIPボタン押下時の処理
-                Log.d("AlertDialog", "Neutral which :" + which);
-                pauseFlag = false;
-            }
-        });*/
 
         // NG(否定的な)ボタンの設定
         alertDialog.setNegativeButton("Exit", new DialogInterface.OnClickListener(){
@@ -331,33 +313,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         alertDialog.show();
     }
 
-
-/*    public void gameInit(){
-        isRunning = false;
-        overTime = 0;
-        count = 0;
-        score = 0;
-        chara.init(displayX,displayY);
-
-        for(int i = 0; i < enemys.size(); i++){
-            enemys.remove(i);
-        }
-
-        for(int i = 0; i < enemyBeams.size(); i++){
-            enemyBeams.remove(i);
-        }
-
-        for(int i = 0; i < explotions.size(); i++){
-            explotions.remove(i);
-        }
-
-        for(int i = 0; i < N; i++){
-            charaBeam[i].isDead = false;
-        }
-
-        isRunning = true;
-        pauseFlag = false;
-    }*/
 
     public void run(){
 
@@ -388,16 +343,16 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
                     if(!hitFlag){
 
-                        enemyMoveSpeed = (score / 15) + 4;
-                        enemyIncidence = 60 - (score / 15) * 8;
+                        enemyMoveSpeed = ((score / 15) + 4) * scale;
+                        enemyIncidence = ( 60 - (score / 15) * 9) * scale;
                         if(enemyIncidence < 10){
                             enemyIncidence = 10;
                         }
 
                         addEnemy(count, enemyMoveSpeed, enemyIncidence);
 
-                        enemyBeamMoveSpeed = (score / 15) + 4;
-                        enemyBeamIncidence = 70 - (score / 15) * 5;
+                        enemyBeamMoveSpeed = ( (score / 15) + 4) * scale;
+                        enemyBeamIncidence = ( 70 - (score / 15) * 7 ) * scale;
                         if(enemyBeamIncidence < 10){
                             enemyBeamIncidence = 10;
                         }
@@ -439,7 +394,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         }catch(Exception e){
         }
     }
-
 
     private void addBeam(int count){
         //beamを出す
@@ -498,7 +452,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 }
 
                 Log.d("overTime", "time" + overTime);
-
 
                 explotions.add(new Explotion(explotionImage, chara.getCenterX()
                         , chara.getCenterY(), count));
@@ -595,9 +548,9 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         }
     }
 
-
+    //爆発処理
     public void bom(int explotionSpeed, int count){
-        //爆発処理
+
         for(int i = 0; i < explotions.size(); i++){
 
             for(int j = 1; j < 10; j++){
