@@ -100,7 +100,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     //pause
     boolean pauseFlag = false;
 
-    //
+    //touchされたか
     boolean touchFlag = false;
 
 
@@ -289,25 +289,29 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         alertDialog.setPositiveButton("Restart", new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialog, int which){
                 // OKボタン押下時の処理
-                Log.d("AlertDialog", "Positive which :" + which);
+                //Log.d("AlertDialog", "Positive which :" + which);
                 //Intent title = new Intent(getContext(), MainActivity.class);
                 //title.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 //title.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 //isRunning = false;
                 //thread = null;
                 //mContext.startActivity(title);
-                gameInit();
+                // SKIPボタン押下時の処理
+                Log.d("AlertDialog", "Neutral which :" + which);
+                pauseFlag = false;
+
+                //gameInit();
             }
         });
 
         // SKIP(中立的な)ボタンの設定
-        alertDialog.setNeutralButton("Resume", new DialogInterface.OnClickListener(){
+        /*alertDialog.setNeutralButton("Resume", new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialog, int which){
                 // SKIPボタン押下時の処理
                 Log.d("AlertDialog", "Neutral which :" + which);
                 pauseFlag = false;
             }
-        });
+        });*/
 
         // NG(否定的な)ボタンの設定
         alertDialog.setNegativeButton("Exit", new DialogInterface.OnClickListener(){
@@ -328,7 +332,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     }
 
 
-    public void gameInit(){
+/*    public void gameInit(){
         isRunning = false;
         overTime = 0;
         count = 0;
@@ -353,7 +357,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
         isRunning = true;
         pauseFlag = false;
-    }
+    }*/
 
     public void run(){
 
