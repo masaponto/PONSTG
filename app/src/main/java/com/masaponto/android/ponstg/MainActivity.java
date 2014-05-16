@@ -103,7 +103,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     //touchされたか
     boolean touchFlag = false;
 
-
     int count;
     int overTime;
 
@@ -191,6 +190,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         isRunning = true;
         thread = new Thread(this);
         thread.start();
+
     }
 
     public void surfaceDestroyed(SurfaceHolder holder){
@@ -224,27 +224,31 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 if(pauseX1 < touchX && touchX < pauseX2 && pauseY1 < touchY && touchY < pauseY2){
                     pausePushFlag = true;
                     playPushFlag = true;
-                }else{
+                }
+
+                else{
                     if(!pauseFlag){
                         touchFlag = true;
                         sp.play(beamSoundId, 1.0F, 1.0F, 0, 0, 1.0F);
                     }
-
                 }
 
             }
 
 
             if(action == MotionEvent.ACTION_MOVE){
+
                 touchX2 = (int) event.getX();
                 touchY2 = (int) event.getY();
 
                 if(!pauseFlag){
                     chara.move(charaCenterX - (touchX - touchX2), charaCenterY - (touchY - touchY2));
                 }
+
             }
 
             if(action == MotionEvent.ACTION_UP){
+
                 pausePushFlag = false;
                 playPushFlag = false;
                 touchFlag = false;
@@ -253,7 +257,8 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                     if(pauseX1 < touchX2 && touchX2 < pauseX2 && pauseY1 < touchY2 && touchY2 < pauseY2){
                         pauseFlag = false;
                     }
-                }else{
+                }
+                else{
                     if(pauseX1 < touchX2 && touchX2 < pauseX2 && pauseY1 < touchY2 && touchY2 < pauseY2){
                         pauseFlag = true;
                         showDialog(mContext, "Paused");
@@ -261,6 +266,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 }
 
             }
+
         }
 
         return true;
@@ -281,15 +287,15 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
     //ダイアログ
     private void showDialog(final Context context, String title){
+
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
         // ダイアログの設定
         alertDialog.setTitle(title);      //タイトル設定
 
-        // OK(肯定的な)ボタンの設定
         alertDialog.setPositiveButton("Resume", new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialog, int which){
-                // OKボタン押下時の処理
+                // Resumeボタン押下時の処理
                 Log.d("AlertDialog", "Neutral which :" + which);
                 pauseFlag = false;
             }
@@ -299,19 +305,19 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         // NG(否定的な)ボタンの設定
         alertDialog.setNegativeButton("Exit", new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialog, int which){
-                // NGボタン押下時の処理
+                // Exitボタン押下時の処理
                 Log.d("AlertDialog", "Negative which :" + which);
                 Intent titleIntent = new Intent(getContext(), TitleActivity.class);
                 titleIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 titleIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 isRunning = false;
-                //thread = null;
                 mContext.startActivity(titleIntent);
             }
         });
 
         // ダイアログの作成と描画
         alertDialog.show();
+
     }
 
 
@@ -319,7 +325,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
         Paint mPaint = new Paint();
 
-        count = 50;
+        count = 50 * scale;
         overTime = 0;
 
         int enemyMoveSpeed, enemyIncidence;
@@ -340,6 +346,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
             if(canvas != null){
 
                 if(!pauseFlag){
+
                     count++;
 
                     if(!hitFlag){
@@ -359,6 +366,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                         }
 
                         addEnemyBeam(count, enemyBeamIncidence, enemyBeamMoveSpeed);
+
                     }
 
                     addBeam(count);
@@ -368,8 +376,9 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                     moveCharaBeam(enemyR, count);
 
                     removeEnemy();
+                    removeEnemyBeam();
 
-                    bom(explotionSpeed, count);
+                    doExplotion(explotionSpeed, count);
 
                 }
 
@@ -387,6 +396,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 }
 
             }
+
         }
 
 
@@ -394,14 +404,13 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
             Thread.sleep(10);//お決まり
         }catch(Exception e){
         }
+
     }
+
 
     private void addBeam(int count){
         //beamを出す
         if(touchFlag && count % 15 == 0){
-//            if(!charaBeam[beamCount].CharaBeamFlag){
-  //              sp.play(beamSoundId, 1.0F, 1.0F, 0, 0, 1.0F);
-    //        }
             charaBeam[beamCount].CharaBeamFlag = true;
             beamCount = (beamCount + 1) % N;
         }
@@ -416,6 +425,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         }
     }
 
+
     private void addEnemyBeam(int count, int incidence, int moveSpeed){
         if(count % incidence == 0 && !enemys.isEmpty()){
             for(int i = 0; i < enemys.size(); i++){
@@ -424,6 +434,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
             }
         }
     }
+
 
     private void removeEnemy(){
         for(int i = 0; i < enemys.size(); i++){
@@ -435,6 +446,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
 
     private int moveEnemy(int charaR, int overTime, int count){
+
         for(int i = 0; i < enemys.size(); i++){
 
             if(!hitFlag){
@@ -452,7 +464,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                     overTime = count;
                 }
 
-                Log.d("overTime", "time" + overTime);
+                //Log.d("overTime", "time" + overTime);
 
                 explotions.add(new Explotion(explotionImage, chara.getCenterX()
                         , chara.getCenterY(), count));
@@ -467,18 +479,21 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
             }
 
             //画面外に出たらリストから消す
-            if(enemys.get(i).getY() > displayY * 2 / 3 || enemys.get(i).getCenterX() > displayX || enemys.get(i).getCenterX() < 0){
+            if(enemys.get(i).getY() > displayY * 3/4 || enemys.get(i).getCenterX() > displayX || enemys.get(i).getCenterX() < 0){
                 enemys.get(i).deathFlag = true;
             }
 
         }
 
         return overTime;
+
     }
 
 
     private int moveEnemyBeam(int charaR, int overTime, int count){
+
         for(int i = 0; i < enemyBeams.size(); i++){
+
             if(!hitFlag){
                 enemyBeams.get(i).move();
             }
@@ -486,13 +501,13 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
             chara.hitDistance2 = (int) Math.sqrt(Math.pow(chara.getCenterX() - enemyBeams.get(i).getCenterX(), 2)
                     + Math.pow(chara.getCenterY() - enemyBeams.get(i).getCenterY(), 2));
 
-            if(enemyBeams.get(i).getY() > displayY * 2 / 3 || enemyBeams.get(i).getY() < 0
+            if(enemyBeams.get(i).getY() > displayY * 3/4 || enemyBeams.get(i).getY() < 0
                     || enemyBeams.get(i).getX() < 0 || enemyBeams.get(i).getX() > displayX){
-                enemyBeams.remove(i);
+                enemyBeams.get(i).deathFlag = true;
             }
 
-
             if(chara.hitDistance2 < charaR){
+
                 hitFlag = true;
 
                 if(overTime == 0){
@@ -502,20 +517,32 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 explotions.add(new Explotion(explotionImage, chara.getCenterX()
                         , chara.getCenterY(), count));
 
-                enemyBeams.remove(i);
+                enemyBeams.get(i).deathFlag = true;
 
                 sp.play(hitSoundId, 1.0F, 1.0F, 0, 0, 1.0F);
 
             }
 
         }
+
         return overTime;
 
     }
 
 
+    private void removeEnemyBeam(){
+        for(int i = 0; i < enemyBeams.size(); i++){
+            if(enemyBeams.get(i).deathFlag == true){
+                enemyBeams.remove(i);
+            }
+        }
+    }
+
+
     public void moveCharaBeam(int enemyR, int count){
+
         for(int i = 0; i < N; i++){
+
             if(charaBeam[i].CharaBeamFlag){
                 charaBeam[i].isDead = false;
 
@@ -524,6 +551,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 }
 
                 for(int j = 0; j < enemys.size(); j++){
+
                     enemys.get(j).hitDistance = Math.sqrt(Math.pow((enemys.get(j).getCenterX() - charaBeam[i].getCenterX()), 2)
                             + Math.pow((enemys.get(j).getCenterY() - charaBeam[i].getCenterY()), 2));
 
@@ -545,12 +573,16 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                     }
 
                 }
+
             }
+
         }
+
     }
 
+
     //爆発処理
-    public void bom(int explotionSpeed, int count){
+    public void doExplotion(int explotionSpeed, int count){
 
         for(int i = 0; i < explotions.size(); i++){
 
@@ -565,6 +597,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
             }
 
         }
+
     }
 
 
@@ -612,7 +645,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         mPaint.setColor(Color.BLACK);
         canvas.drawText("SCORE:" + score, 0, 50 * scale, mPaint);
 
-        canvas.drawRect(0, displayY * 2 / 3, displayX, displayY, mPaint);
+        canvas.drawRect(0, displayY * 3/4, displayX, displayY, mPaint);
 
     }
 
@@ -675,8 +708,8 @@ class Chara{
         if(p.y < 0){
             p.y = 0;
         }
-        if(p.y + (sizeY) > displayY * 2 / 3){
-            p.y = displayY * 2 / 3 - sizeY;
+        if(p.y + (sizeY) > displayY * 3/4){
+            p.y = displayY * 3/4 - sizeY;
         }
 
         charaDst = new Rect(p.x, p.y, p.x + sizeX, p.y + sizeY);
@@ -870,6 +903,7 @@ class EnemyBeam{
     private double angle;
     private int scale, radius;
     private int moveSpeed;
+    public boolean deathFlag = false;
 
     EnemyBeam(int w, int h, int charaX, int charaY, int displayX, int scale, int moveSpeed){
         p = new Point();
