@@ -227,6 +227,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 }else{
                     if(!pauseFlag){
                         touchFlag = true;
+                        sp.play(beamSoundId, 1.0F, 1.0F, 0, 0, 1.0F);
                     }
 
                 }
@@ -397,10 +398,10 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
     private void addBeam(int count){
         //beamを出す
-        if(touchFlag && count % 10 == 0){
-            if(!charaBeam[beamCount].CharaBeamFlag){
-                sp.play(beamSoundId, 1.0F, 1.0F, 0, 0, 1.0F);
-            }
+        if(touchFlag && count % 15 == 0){
+//            if(!charaBeam[beamCount].CharaBeamFlag){
+  //              sp.play(beamSoundId, 1.0F, 1.0F, 0, 0, 1.0F);
+    //        }
             charaBeam[beamCount].CharaBeamFlag = true;
             beamCount = (beamCount + 1) % N;
         }
