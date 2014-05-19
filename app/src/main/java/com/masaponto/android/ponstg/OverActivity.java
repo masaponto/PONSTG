@@ -17,6 +17,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -155,7 +156,6 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
 
         setFocusable(true);
         getHolder().addCallback(this);
-
         calcHighScore(context, score);
 
     }
@@ -227,8 +227,9 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
                     //intent.setClassName("com.twitter.android","com.twitter.android.PostActivity");
                     intent.putExtra(Intent.EXTRA_TEXT, "PLAYED PON-SHOOTING!\nSCORE:" + score + " #PON_SHOOTING");
                     intent.setType("text/plain");
-
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);
+
                 }catch(Exception e){
                     Uri uri = Uri.parse("market://search?q=com.twitter.android");
                     Intent marketIntent = new Intent(Intent.ACTION_VIEW, uri);
@@ -241,6 +242,9 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
         return true;
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("backed","backed indent");
+    }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){
     }
@@ -283,12 +287,15 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
         // mPaint.setTypeface(typeface);
         mPaint.setColor(Color.BLACK);
 
+        String overText = "GameOver";
         mPaint.setTextSize(60 * scale);
-        canvas.drawText("GameOver", displayX / 5, displayY / 4, mPaint);
+        float textWidth = mPaint.measureText(overText);
+        float dispX = displayX / 2 - textWidth/2;
+        canvas.drawText(overText, dispX, displayY / 4, mPaint);
 
         mPaint.setTextSize(40 * scale);
-        canvas.drawText("SCORE:" + score, displayX / 5, displayY / 3 + (45 * scale), mPaint);
-        canvas.drawText("HIGHSCORE:" + highScore, displayX / 5, displayY / 3 + (90 * scale), mPaint);
+        canvas.drawText("SCORE:" + score, dispX, displayY / 3 + (45 * scale), mPaint);
+        canvas.drawText("HIGHSCORE:" + highScore, dispX, displayY / 3 + (90 * scale), mPaint);
 
         if(homePushFlag){
             canvas.drawBitmap(homeImage, homeSrc, homeDst2, mPaint);
