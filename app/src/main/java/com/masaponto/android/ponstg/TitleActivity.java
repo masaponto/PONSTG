@@ -221,10 +221,13 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
         }
 
         mPaint.setTextSize(50 * scale);
-        canvas.drawText("PON", displayX / 4, displayY / 3 - (52 * scale), mPaint);
-        canvas.drawText("SHOOTING", displayX / 4 , displayY / 3 , mPaint);
+        String titleText = "SHOOTING";
+        float textWidth = mPaint.measureText(titleText);
+        float dispX = displayX / 2 - textWidth/2;
+        canvas.drawText("PON", dispX, displayY / 3 - (52 * scale), mPaint);
+        canvas.drawText("SHOOTING", dispX, displayY / 3 , mPaint);
         mPaint.setTextSize(30 * scale);
-        canvas.drawText("HIGHSCORE:" + highScore, displayX / 4, displayY / 3 + (35 * scale), mPaint);
+        canvas.drawText("HIGHSCORE:" + highScore, dispX, displayY / 3 + (35 * scale), mPaint);
 
         canvas.drawText("developed by masaponto", 0, displayY - (50 * scale), mPaint);
     }
