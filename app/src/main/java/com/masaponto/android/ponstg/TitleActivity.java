@@ -42,7 +42,7 @@ public class TitleActivity extends Activity{
 
     public void onPause(){
         super.onPause();
-        finish();
+        //finish();
     }
 
 
@@ -76,6 +76,7 @@ public class TitleActivity extends Activity{
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener(){
                     public void onClick(DialogInterface dialog, int whichButton){
                         finish(); //終了
+                        //moveTaskToBack(true);
                     }
                 })
                 .setNegativeButton("NO", new DialogInterface.OnClickListener(){
@@ -158,6 +159,8 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
             if(playX1 < x && x < playX2 && playY1 < y && y < playY2){
                 Intent mainIntent = new Intent(getContext(), MainActivity.class);
                 isRunning = false;
+                mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                //mainIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 mContext.startActivity(mainIntent);
             }
         }
