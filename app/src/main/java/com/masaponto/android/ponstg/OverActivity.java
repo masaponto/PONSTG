@@ -3,6 +3,7 @@ package com.masaponto.android.ponstg;
 import android.app.Activity;
 
 import android.app.AlertDialog;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -46,7 +47,7 @@ public class OverActivity extends Activity{
 
     public void onPause(){
         super.onPause();
-        finish();
+        //finish();
     }
 
     @Override
@@ -192,9 +193,6 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
                 twitPushFlag = true;
             }
 
-
-            //Log.v("tag", "y:" + y + "x:" + x + " homeR:" + homeR + " distance:" + homeDistance);
-
         }
 
         if(event.getAction() == MotionEvent.ACTION_UP){
@@ -206,7 +204,6 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
             if(homeX1 < x && x < homeX2 && homeY1 < y && y < homeY2){
                 Intent title = new Intent(getContext(), TitleActivity.class);
                 isRunning = false;
-                //thread = null;
                 title.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 title.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 mContext.startActivity(title);
@@ -217,17 +214,14 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
                 isRunning = false;
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                //thread = null;
                 mContext.startActivity(mainIntent);
             }
 
             if(twitX1 < x && x < twitX2 && twitY1 < y && y < twitY2){
                 try{
                     Intent intent = new Intent(Intent.ACTION_SEND);
-                    //intent.setClassName("com.twitter.android","com.twitter.android.PostActivity");
                     intent.putExtra(Intent.EXTRA_TEXT, "PLAYED PON-SHOOTING!\nSCORE:" + score + " #PON_SHOOTING");
                     intent.setType("text/plain");
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);
 
                 }catch(Exception e){
@@ -240,10 +234,6 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
 
 
         return true;
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("backed","backed indent");
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){
