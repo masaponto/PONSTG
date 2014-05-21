@@ -213,7 +213,7 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
                 Intent mainIntent = new Intent(getContext(), MainActivity.class);
                 isRunning = false;
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                mainIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                //mainIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 mContext.startActivity(mainIntent);
             }
 
