@@ -10,6 +10,7 @@ import android.graphics.Rect;
 /**
  * Created by masato on 5/21/14.
  */
+
 class Enemy{
 
     private Bitmap enemyImage;
