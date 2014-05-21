@@ -206,6 +206,7 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
                 isRunning = false;
                 title.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 title.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                //title.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 mContext.startActivity(title);
             }
 
@@ -214,6 +215,7 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
                 isRunning = false;
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                //mainIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 mContext.startActivity(mainIntent);
             }
 
