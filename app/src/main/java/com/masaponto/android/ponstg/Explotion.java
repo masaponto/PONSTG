@@ -16,20 +16,20 @@ class Explotion{
 
     public int exSwitch = 0;
 
-    int dispX, dispY;
-    int count;
+    private int displayX;
+    public int count;
+
 
     Rect[] srcs = new Rect[10];
     Rect dst;
 
 
-    Explotion(Bitmap explotionImage, int X, int Y, int count){
+    Explotion(Bitmap explotionImage, int X, int Y, int count, int displayX){
         this.explotionImage = explotionImage;
+        this.displayX = displayX;
+
         int h = explotionImage.getHeight();
         int w = explotionImage.getWidth() / 10;
-
-        dispX = X - w + 20;
-        dispY = Y - h;
 
         this.count = count;
 
@@ -37,7 +37,7 @@ class Explotion{
             srcs[i] = new Rect(i * w, 0, w + i * w, h);
         }
 
-        dst = new Rect(dispX, dispY, dispX + w * 3 / 2, dispY + h * 3 / 2);
+        dst = new Rect(X - displayX/6, Y - displayX/6, X + displayX/6, Y + displayX/6);
 
     }
 

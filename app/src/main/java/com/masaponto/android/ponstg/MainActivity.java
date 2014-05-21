@@ -489,10 +489,10 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 //Log.d("overTime", "time" + overTime);
 
                 explotions.add(new Explotion(explotionImage, chara.getCenterX()
-                        , chara.getCenterY(), count));
+                        , chara.getCenterY(), count, displayX));
 
                 explotions.add(new Explotion(explotionImage, enemys.get(i).getCenterX()
-                        , enemys.get(i).getCenterY(), count));
+                        , enemys.get(i).getCenterY(), count, displayX));
 
                 enemys.get(i).deathFlag = true;
 
@@ -537,7 +537,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 }
 
                 explotions.add(new Explotion(explotionImage, chara.getCenterX()
-                        , chara.getCenterY(), count));
+                        , chara.getCenterY(), count, displayX));
 
                 enemyBeams.get(i).deathFlag = true;
 
@@ -583,7 +583,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                         score++;
 
                         explotions.add(new Explotion(explotionImage, enemys.get(j).getCenterX()
-                                , enemys.get(j).getCenterY(), count));
+                                , enemys.get(j).getCenterY(), count, displayX));
 
                         charaBeam[i].CharaBeamFlag = false;
                         charaBeam[i].isDead = true;
