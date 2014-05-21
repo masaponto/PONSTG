@@ -10,11 +10,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -24,9 +22,9 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.Window;
 import android.view.WindowManager;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -37,26 +35,45 @@ public class MainActivity extends Activity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
-
         super.onCreate(savedInstanceState);
 
-        //タイトルいらない
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        //画面の大きさ取得
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
-        int displayX = display.getWidth();
-        int displayY = display.getHeight();
+        Point size = new Point();
+        overrideGetSize(display, size);
+        int displayX = size.x;
+        int displayY = size.y;
 
         mSurfaceView = new MySurfaceView(this, displayX, displayY);
         setContentView(mSurfaceView);
     }
 
+
+    //画面の大きさ取得
+    void overrideGetSize(Display display, Point outSize){
+        try{
+            // test for new method to trigger exception
+            Class pointClass = Class.forName("android.graphics.Point");
+            Method newGetSize = Display.class.getMethod("getSize", new Class[]{pointClass});
+
+            Log.d("gamen size","getSize");
+
+            // no exception, so new method is available, just use it
+            newGetSize.invoke(display, outSize);
+        }catch(Exception ex){
+            // new method is not available, use the old ones
+            Log.d("gamen size","exception occered");
+            outSize.x = display.getWidth();
+            outSize.y = display.getHeight();
+        }
+    }
+
     public void onPause(){
         super.onPause();
-        //finish();
-        mSurfaceView.pauseFlag=true;
+        if(!mSurfaceView.hitFlag){
+            mSurfaceView.pauseFlag = true;
+            mSurfaceView.showDialog("Paused");
+        }
     }
 
 }
@@ -264,7 +281,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 else{
                     if(pauseX1 < touchX2 && touchX2 < pauseX2 && pauseY1 < touchY2 && touchY2 < pauseY2){
                         pauseFlag = true;
-                        showDialog(mContext, "Paused");
+                        showDialog("Paused");
                     }
                 }
 
@@ -282,19 +299,21 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
             case KeyEvent.KEYCODE_BACK:
                 pauseFlag = true;
                 // 終了していいか、ダイアログで確認
-                showDialog(mContext, "Paused");
+                showDialog("Paused");
                 break;
         }
         return true;
     }
 
     //ダイアログ
-    private void showDialog(final Context context, String title){
+    //public void showDialog(final Context context, String title){
+    public void showDialog(String title){
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
-        // ダイアログの設定
-        alertDialog.setTitle(title);      //タイトル設定
+        //ダイアログの設定
+        //タイトル設定
+        alertDialog.setTitle(title);
 
         alertDialog.setPositiveButton("Resume", new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialog, int which){
@@ -656,336 +675,10 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         //GameOver画面へ
         Intent gameOver = new Intent(getContext(), OverActivity.class);
         gameOver.putExtra("score", score);
-        //gameOver.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        gameOver.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //gameOver.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         mContext.startActivity(gameOver);
-    }
 
-}
-
-
-class Chara{
-
-    private Bitmap charaImage;
-    private Rect charaSrc, charaDst;
-    private Point p;
-    private Paint paint;
-
-    public int hitDistance1, hitDistance2;
-
-    private int displayX, displayY;
-
-    private int scale;
-    private int sizeX, sizeY;
-
-    Chara(Bitmap charaImage, int displayX, int displayY, int sizeX, int sizeY, int scale){
-        this.charaImage = charaImage;
-        this.displayX = displayX;
-        this.displayY = displayY;
-        this.scale = scale;
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
-
-        p = new Point();
-        paint = new Paint();
-        charaSrc = new Rect(0, 0, charaImage.getWidth(), charaImage.getHeight());
-
-        init(displayX, displayY);
-    }
-
-    public void init(int displayX, int displayY){
-        p.x = displayX / 2 - (sizeX) / 2;
-        p.y = displayY * 2 / 3 - (sizeY) * 3;
-        charaDst = new Rect(p.x, p.y, p.x + sizeX, p.y + sizeY);
-    }
-
-    public void move(int x, int y){
-        p.x = x - (sizeX) / 2;
-        p.y = y - (sizeY) / 2;
-
-        //画面外のでないように処理
-        if(p.x < 0){
-            p.x = 0;
-        }
-        if(p.x + (sizeX) > displayX){
-            p.x = displayX - (sizeX);
-        }
-        if(p.y < 0){
-            p.y = 0;
-        }
-        if(p.y + (sizeY) > displayY * 3/4){
-            p.y = displayY * 3/4 - sizeY;
-        }
-
-        charaDst = new Rect(p.x, p.y, p.x + sizeX, p.y + sizeY);
-    }
-
-    public int getCenterX(){
-        return p.x + (sizeX) / 2;
-    }
-
-    public int getCenterY(){
-        return p.y + (sizeY) / 2;
-    }
-
-    public void drawMove(Canvas c){
-        c.drawBitmap(charaImage, charaSrc, charaDst, paint);
-    }
-
-}
-
-
-class CharaBeam{
-
-    private Point p;
-    private int beamCenterX;
-    private int beamCenterY;
-    private Paint paint;
-
-    public boolean CharaBeamFlag = false;
-    public boolean isDead = true;
-
-    private int scale;
-    private int charaBeamSpeed;
-    private int radius, displayX;
-
-    CharaBeam(int displayX, int scale){
-        this.displayX = displayX;
-        this.scale = scale;
-        p = new Point();
-        paint = new Paint();
-        paint.setColor(Color.BLACK);
-        radius = displayX / 80;
-        charaBeamSpeed = 5 * scale;
-    }
-
-    private void init(int w, int h){
-        p.x = w;
-        p.y = h;
-    }
-
-    public void move(){
-        p.y -= charaBeamSpeed;
-        beamCenterX = p.x + radius / 2;
-        beamCenterY = p.y + radius / 2;
-
-        if(p.y < 0){
-            isDead = true;
-            CharaBeamFlag = false;
-        }
-    }
-
-    public void drawMove(Canvas c, int w, int h){
-        if(isDead){
-            init(w, h);
-        }
-        c.drawCircle(p.x, p.y, radius, paint);
-    }
-
-    public int getCenterX(){
-        return beamCenterX;
-    }
-
-    public int getCenterY(){
-        return beamCenterY;
-    }
-
-    public int getRadius(){
-        return radius;
-    }
-
-
-}
-
-
-class Enemy{
-
-    private Bitmap enemyImage;
-    private Rect enemySrc, enemyDst;
-    private Point p;
-    private Paint paint;
-
-    private int enemyCenterX;
-    private int enemyCenterY;
-    private int displayX, displayY;
-    private int sizeX, sizeY;
-    private int scale;
-    private int moveSpeed;
-
-    double hitDistance;
-
-    public boolean deathFlag = false;
-
-    //add
-    Matrix matrix1 = new Matrix();
-    Matrix matrix2 = new Matrix();
-    Matrix matrix3 = new Matrix();
-    Matrix matrix4 = new Matrix();
-    Bitmap enemy1, enemy2, enemy3, enemy4;
-    private int count;
-
-    Enemy(Bitmap enemyImage, int w, int h, int displayX, int displayY, int sizeX, int sizeY, int scale, int moveSpeed){
-        this.enemyImage = enemyImage;
-        p = new Point();
-        paint = new Paint();
-        p.x = w;
-        p.y = h;
-        this.scale = scale;
-        this.displayX = displayX;
-        this.displayY = displayY;
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
-        this.moveSpeed = moveSpeed;
-
-        enemyCenterX = p.x + (sizeX) / 2;
-        enemyCenterY = p.y + (sizeY) / 2;
-
-        matrix1.postScale(0.1F * scale, 0.1F * scale);
-        matrix2.postRotate(22.5F);
-        matrix2.postScale(0.1F * scale, 0.1F * scale);
-        matrix3.postRotate(45F);
-        matrix3.postScale(0.1F * scale, 0.1F * scale);
-        matrix4.postRotate(67.5F);
-        matrix4.postScale(0.1F * scale, 0.1F * scale);
-        enemy1 = Bitmap.createBitmap(enemyImage, 0, 0, enemyImage.getWidth(), enemyImage.getHeight(), matrix1, true);
-        enemy2 = Bitmap.createBitmap(enemyImage, 0, 0, enemyImage.getWidth(), enemyImage.getHeight(), matrix2, true);
-        enemy3 = Bitmap.createBitmap(enemyImage, 0, 0, enemyImage.getWidth(), enemyImage.getHeight(), matrix3, true);
-        enemy4 = Bitmap.createBitmap(enemyImage, 0, 0, enemyImage.getWidth(), enemyImage.getHeight(), matrix4, true);
-
-        count = 0;
-    }
-
-    public void move(){
-        p.y += moveSpeed * scale;
-        enemyCenterX = p.x + (sizeX) / 2;
-        enemyCenterY = p.y + (sizeY) / 2;
-    }
-
-    public void drawMove(Canvas c){
-
-        count++;
-
-        if(count < 5){
-            c.drawBitmap(enemy1, p.x, p.y, paint);
-        }else if(5 <= count && count < 10){
-            c.drawBitmap(enemy2, p.x, p.y, paint);
-        }else if(10 <= count && count < 15){
-            c.drawBitmap(enemy3, p.x, p.y, paint);
-        }else{
-            c.drawBitmap(enemy4, p.x, p.y, paint);
-        }
-
-        if(count >= 20){
-            count = 0;
-        }
-    }
-
-    public int getX(){
-        return p.x;
-    }
-
-    public int getY(){
-        return p.y;
-    }
-
-    public int getCenterX(){
-        return enemyCenterX;
-    }
-
-    public int getCenterY(){
-        return enemyCenterY;
-    }
-
-}
-
-
-class EnemyBeam{
-
-    private Point p;
-    private Paint paint;
-    private int beamCenterX;
-    private int beamCenterY;
-    private double angle;
-    private int scale, radius;
-    private int moveSpeed;
-    public boolean deathFlag = false;
-
-    EnemyBeam(int w, int h, int charaX, int charaY, int displayX, int scale, int moveSpeed){
-        p = new Point();
-        p.x = w;
-        p.y = h;
-
-        paint = new Paint();
-        paint.setColor(Color.BLACK);
-
-        angle = Math.atan2(charaY - h, charaX - w);
-        this.scale = scale;
-        radius = displayX / 80;
-        this.moveSpeed = moveSpeed;
-    }
-
-    public void move(){
-        p.x += Math.cos(angle) * moveSpeed * scale;
-        p.y += Math.sin(angle) * moveSpeed * scale;
-        beamCenterX = p.x + radius / 2;
-        beamCenterY = p.y + radius / 2;
-    }
-
-    public void drawMove(Canvas c){
-        c.drawCircle(p.x, p.y, radius, paint);
-    }
-
-    public int getX(){
-        return p.x;
-    }
-
-    public int getY(){
-        return p.y;
-    }
-
-    public int getCenterX(){
-        return beamCenterX;
-    }
-
-    public int getCenterY(){
-        return beamCenterY;
-    }
-
-}
-
-
-class Explotion{
-
-    private Bitmap explotionImage;
-
-    public int exSwitch = 0;
-
-    int dispX, dispY;
-    int count;
-
-    Rect[] srcs = new Rect[10];
-    Rect dst;
-
-
-    Explotion(Bitmap explotionImage, int X, int Y, int count){
-        this.explotionImage = explotionImage;
-        int h = explotionImage.getHeight();
-        int w = explotionImage.getWidth() / 10;
-
-        dispX = X - w + 20;
-        dispY = Y - h;
-
-        this.count = count;
-
-        for(int i = 0; i < 10; i++){
-            srcs[i] = new Rect(i * w, 0, w + i * w, h);
-        }
-
-        dst = new Rect(dispX, dispY, dispX + w * 3 / 2, dispY + h * 3 / 2);
-
-    }
-
-    public void drawMove(Canvas c){
-        c.drawBitmap(explotionImage, srcs[exSwitch], dst, new Paint());
     }
 
 }
