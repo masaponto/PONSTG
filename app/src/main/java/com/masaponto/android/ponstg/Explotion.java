@@ -11,6 +11,7 @@ import android.graphics.Rect;
 
 class Explotion{
 
+
     private Bitmap explotionImage;
 
     public int exSwitch = 0;
