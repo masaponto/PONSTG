@@ -76,6 +76,7 @@ public class TitleActivity extends Activity{
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener(){
                     public void onClick(DialogInterface dialog, int whichButton){
                         finish(); //終了
+                        //finish();
                         //moveTaskToBack(true);
                     }
                 })

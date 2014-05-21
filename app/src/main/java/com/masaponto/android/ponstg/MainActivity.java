@@ -33,6 +33,8 @@ import java.util.Random;
 
 public class MainActivity extends Activity{
 
+    MySurfaceView mSurfaceView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
 
@@ -47,13 +49,14 @@ public class MainActivity extends Activity{
         int displayX = display.getWidth();
         int displayY = display.getHeight();
 
-        MySurfaceView mSurfaceView = new MySurfaceView(this, displayX, displayY);
+        mSurfaceView = new MySurfaceView(this, displayX, displayY);
         setContentView(mSurfaceView);
     }
 
     public void onPause(){
         super.onPause();
-        finish();
+        //finish();
+        mSurfaceView.pauseFlag=true;
     }
 
 }
@@ -653,6 +656,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         //GameOver画面へ
         Intent gameOver = new Intent(getContext(), OverActivity.class);
         gameOver.putExtra("score", score);
+        //gameOver.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         mContext.startActivity(gameOver);
     }
 
