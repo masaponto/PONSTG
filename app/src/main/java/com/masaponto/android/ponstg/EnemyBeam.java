@@ -8,6 +8,7 @@ import android.graphics.Point;
 /**
  * Created by masato on 5/21/14.
  */
+
 class EnemyBeam{
 
     private Point p;

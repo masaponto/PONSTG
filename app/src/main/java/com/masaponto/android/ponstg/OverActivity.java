@@ -1,9 +1,7 @@
 package com.masaponto.android.ponstg;
 
 import android.app.Activity;
-
 import android.app.AlertDialog;
-import android.app.Instrumentation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,40 +12,60 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.Window;
 import android.view.WindowManager;
-import android.view.Display;
+
+import java.lang.reflect.Method;
 
 public class OverActivity extends Activity{
 
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
-        int displayX = display.getWidth();
-        int displayY = display.getHeight();
+        Point size = new Point();
+        overrideGetSize(display, size);
+        int displayX = size.x;
+        int displayY = size.y;
 
         super.onCreate(savedInstanceState);
         String score = "" + getIntent().getIntExtra("score", 0);
+
         OverSurfaceView mSurfaceView = new OverSurfaceView(this, displayX, displayY, score);
         setContentView(mSurfaceView);
     }
 
+
+    void overrideGetSize(Display display, Point outSize){
+        try{
+            // test for new method to trigger exception
+            Class pointClass = Class.forName("android.graphics.Point");
+            Method newGetSize = Display.class.getMethod("getSize", new Class[]{pointClass});
+
+            Log.d("gamen size","getSize");
+            // no exception, so new method is available, just use it
+            newGetSize.invoke(display, outSize);
+        }catch(Exception ex){
+            // new method is not available, use the old ones
+            Log.d("gamen size","exception occered");
+            outSize.x = display.getWidth();
+            outSize.y = display.getHeight();
+        }
+    }
+
     public void onPause(){
         super.onPause();
-        //finish();
     }
 
     @Override
@@ -65,13 +83,16 @@ public class OverActivity extends Activity{
 
 
     //ダイアログ
-    private void showDialog(Context context, String title, String text){
+    private void showDialog(final Context context, String title, String text){
         AlertDialog ad = new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(text)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener(){
                     public void onClick(DialogInterface dialog, int whichButton){
-                        finish(); //終了
+                        Intent title = new Intent(context, TitleActivity.class);
+                        title.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        title.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        context.startActivity(title);
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener(){
@@ -213,7 +234,6 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
                 Intent mainIntent = new Intent(getContext(), MainActivity.class);
                 isRunning = false;
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                //mainIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 mContext.startActivity(mainIntent);
             }
 

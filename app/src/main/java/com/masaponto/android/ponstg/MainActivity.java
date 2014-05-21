@@ -10,11 +10,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -24,37 +22,58 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.Window;
 import android.view.WindowManager;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends Activity{
 
+    MySurfaceView mSurfaceView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
-
-        MySurfaceView mSurfaceView;
         super.onCreate(savedInstanceState);
 
-        //タイトルいらない
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        //画面の大きさ取得
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
-        int displayX = display.getWidth();
-        int displayY = display.getHeight();
+        Point size = new Point();
+        overrideGetSize(display, size);
+        int displayX = size.x;
+        int displayY = size.y;
 
         mSurfaceView = new MySurfaceView(this, displayX, displayY);
         setContentView(mSurfaceView);
     }
 
+
+    //画面の大きさ取得
+    void overrideGetSize(Display display, Point outSize){
+        try{
+            // test for new method to trigger exception
+            Class pointClass = Class.forName("android.graphics.Point");
+            Method newGetSize = Display.class.getMethod("getSize", new Class[]{pointClass});
+
+            Log.d("gamen size","getSize");
+
+            // no exception, so new method is available, just use it
+            newGetSize.invoke(display, outSize);
+        }catch(Exception ex){
+            // new method is not available, use the old ones
+            Log.d("gamen size","exception occered");
+            outSize.x = display.getWidth();
+            outSize.y = display.getHeight();
+        }
+    }
+
     public void onPause(){
         super.onPause();
-        finish();
+        if(!mSurfaceView.hitFlag){
+            mSurfaceView.pauseFlag = true;
+            mSurfaceView.showDialog("Paused");
+        }
     }
 
 }
@@ -262,7 +281,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 else{
                     if(pauseX1 < touchX2 && touchX2 < pauseX2 && pauseY1 < touchY2 && touchY2 < pauseY2){
                         pauseFlag = true;
-                        showDialog(mContext, "Paused");
+                        showDialog("Paused");
                     }
                 }
 
@@ -280,19 +299,21 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
             case KeyEvent.KEYCODE_BACK:
                 pauseFlag = true;
                 // 終了していいか、ダイアログで確認
-                showDialog(mContext, "Paused");
+                showDialog("Paused");
                 break;
         }
         return true;
     }
 
     //ダイアログ
-    private void showDialog(final Context context, String title){
+    //public void showDialog(final Context context, String title){
+    public void showDialog(String title){
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
-        // ダイアログの設定
-        alertDialog.setTitle(title);      //タイトル設定
+        //ダイアログの設定
+        //タイトル設定
+        alertDialog.setTitle(title);
 
         alertDialog.setPositiveButton("Resume", new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialog, int which){
@@ -654,7 +675,10 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         //GameOver画面へ
         Intent gameOver = new Intent(getContext(), OverActivity.class);
         gameOver.putExtra("score", score);
+        gameOver.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //gameOver.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         mContext.startActivity(gameOver);
+
     }
 
 }
