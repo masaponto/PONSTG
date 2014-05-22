@@ -72,7 +72,6 @@ public class MainActivity extends Activity{
         super.onPause();
         if(!mSurfaceView.hitFlag){
             mSurfaceView.pauseFlag = true;
-            mSurfaceView.showDialog("Paused");
         }
     }
 
@@ -208,8 +207,16 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         }
 
         isRunning = true;
-        thread = new Thread(this);
-        thread.start();
+        /*thread = new Thread(this);
+        thread.start();*/
+
+        if(thread == null || thread.getState() == Thread.State.TERMINATED){
+            thread = new Thread(this);
+            thread.start();
+        }else{
+            thread.start();
+        }
+
 
     }
 
@@ -331,7 +338,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 Log.d("AlertDialog", "Negative which :" + which);
                 Intent titleIntent = new Intent(getContext(), TitleActivity.class);
                 titleIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                titleIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 isRunning = false;
                 mContext.startActivity(titleIntent);
             }
@@ -554,7 +560,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
     private void removeEnemyBeam(){
         for(int i = 0; i < enemyBeams.size(); i++){
-            if(enemyBeams.get(i).deathFlag == true){
+            if(enemyBeams.get(i).deathFlag){
                 enemyBeams.remove(i);
             }
         }

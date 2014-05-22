@@ -260,9 +260,16 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
     }
 
     public void surfaceCreated(SurfaceHolder holder){
-        isRunning = true;
+        /*isRunning = true;
         thread = new Thread(this);
-        thread.start();
+        thread.start();*/
+
+        if(thread == null || thread.getState() == Thread.State.TERMINATED){
+            thread = new Thread(this);
+            thread.start();
+        }else{
+            thread.start();
+        }
     }
 
     public void surfaceDestroyed(SurfaceHolder holder){
