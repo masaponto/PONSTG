@@ -111,6 +111,7 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
         getHolder().addCallback(this);
     }
 
+
     public boolean onTouchEvent(MotionEvent event){
         super.onTouchEvent(event);
 
@@ -146,9 +147,16 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
     }
 
     public void surfaceCreated(SurfaceHolder holder){
-        isRunning = true;
+        /*isRunning = true;
         thread = new Thread(this);
-        thread.start();
+        thread.start();*/
+
+        if(thread == null || thread.getState() == Thread.State.TERMINATED){
+            thread = new Thread(this);
+            thread.start();
+        }else{
+            thread.start();
+        }
     }
 
     public void surfaceDestroyed(SurfaceHolder holder){

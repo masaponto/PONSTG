@@ -5,10 +5,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 
-/**
- * Created by masato on 5/21/14.
- */
-
 class EnemyBeam{
 
     private Point p;
@@ -26,7 +22,7 @@ class EnemyBeam{
         p.y = h;
 
         paint = new Paint();
-        paint.setColor(Color.BLACK);
+        paint.setColor(Color.rgb(196,15,24));
 
         angle = Math.atan2(charaY - h, charaX - w);
         this.scale = scale;
