@@ -44,13 +44,10 @@ public class TitleActivity extends Activity{
             // test for new method to trigger exception
             Class pointClass = Class.forName("android.graphics.Point");
             Method newGetSize = Display.class.getMethod("getSize", new Class[]{pointClass});
-
-            Log.d("gamen size","getSize");
             // no exception, so new method is available, just use it
             newGetSize.invoke(display, outSize);
         }catch(Exception ex){
             // new method is not available, use the old ones
-            Log.d("gamen size", "exception occered");
             outSize.x = display.getWidth();
             outSize.y = display.getHeight();
         }
@@ -147,9 +144,6 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
     }
 
     public void surfaceCreated(SurfaceHolder holder){
-        /*isRunning = true;
-        thread = new Thread(this);
-        thread.start();*/
 
         if(thread == null || thread.getState() == Thread.State.TERMINATED){
             thread = new Thread(this);
