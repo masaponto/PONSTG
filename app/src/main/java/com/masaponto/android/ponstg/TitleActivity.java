@@ -94,9 +94,9 @@ class TitleSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Ru
         scale = displayX / 480;
 
         playX1 = displayX / 2 - displayX/5;
-        playY1 = displayY * 1 / 2;
+        playY1 = displayY / 2;
         playX2 = displayX / 2 + displayX/5;
-        playY2 = displayY * 1 / 2 + displayX * 2 / 5;
+        playY2 = displayY / 2 + displayX * 2 / 5;
         playDst = new Rect(playX1, playY1, playX2, playY2);
         playDst2 = new Rect(playX1, playY1 + displayX / 100, playX2, playY2 + displayX / 100);
 
