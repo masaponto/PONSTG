@@ -1,5 +1,6 @@
 package com.masaponto.android.ponstg;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -8,7 +9,7 @@ import android.view.Window;
 import android.widget.ImageButton;
 
 
-public class TitleActivity extends ActionBarActivity {
+public class TitleActivity extends Activity{
 
     private ImageButton mStartButton;
 
