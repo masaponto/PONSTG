@@ -332,7 +332,7 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
 
     public void saveHighScore(Context mcontext, int score){
 
-        SharedPreferences pref = mcontext.getSharedPreferences("HighScore", Context.MODE_WORLD_READABLE);
+        SharedPreferences pref = mcontext.getSharedPreferences("HighScore", Context.MODE_PRIVATE);
 
         // プリファレンスに書き込むためのEditorオブジェクト取得 //
         SharedPreferences.Editor editor = pref.edit();
@@ -348,7 +348,7 @@ class OverSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Run
 
     public int loadHighScore(Context context){
         // プリファレンスの準備 //
-        SharedPreferences pref = context.getSharedPreferences("HighScore", Context.MODE_WORLD_READABLE);
+        SharedPreferences pref = context.getSharedPreferences("HighScore", Context.MODE_PRIVATE);
 
         return pref.getInt("HighScore", 0);
     }
