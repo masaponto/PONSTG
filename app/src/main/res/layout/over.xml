@@ -102,7 +102,7 @@
         android:cropToPadding="false"
         android:adjustViewBounds="true"
         android:layout_weight="1"
-        android:paddingRight="5sp"/>
+        android:paddingRight="10sp"/>
 
         <ImageButton
             android:layout_width="match_parent"
@@ -115,8 +115,8 @@
             android:cropToPadding="false"
             android:adjustViewBounds="true"
             android:layout_weight="1"
-            android:paddingLeft="2.5sp"
-            android:paddingRight="2.5sp"/>
+            android:paddingLeft="5sp"
+            android:paddingRight="5sp"/>
 
         <ImageButton
             android:layout_width="match_parent"
@@ -129,7 +129,7 @@
             android:cropToPadding="false"
             android:adjustViewBounds="true"
             android:layout_weight="1"
-            android:paddingLeft="5sp"
+            android:paddingLeft="10sp"
             android:focusableInTouchMode="true"/>
 
 

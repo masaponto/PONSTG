@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -31,7 +32,7 @@ import java.util.Random;
 
 public class MainActivity extends Activity{
 
-    MySurfaceView mSurfaceView;
+    private MySurfaceView mSurfaceView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -76,17 +77,16 @@ public class MainActivity extends Activity{
 class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runnable{
 
     //画面の大きさ
-    int displayX;
-    int displayY;
+    int displayX, displayY;
 
     //スコア
-    int score = 0;
+    private int score = 0;
 
     //自機オブジェクト
     private Chara chara;
 
     //ビームの数
-    final int N = 20;
+    private final int N = 20;
 
     //ビーム発射ループ用カウンタ
     int beamCount = 0;
@@ -110,20 +110,20 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     private Context mContext;
 
     //charaが敵にやられたかの判定
-    boolean hitFlag = false;
+    protected boolean hitFlag = false;
 
     //pause
-    boolean pauseFlag = false;
+    protected boolean pauseFlag = false;
 
     //touchされたか
     boolean touchFlag = false;
 
-    int count;
-    int overTime;
+    private int count;
+    private int overTime;
 
     //touchされた場所
-    int touchX, touchX2;
-    int touchY, touchY2;
+    private int touchX, touchX2;
+    private int touchY, touchY2;
 
     //charaの中心座標
     int charaCenterX;
@@ -133,7 +133,10 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
     //画像
     Bitmap charaImage = BitmapFactory.decodeResource(res, R.drawable.chara);
+
     Bitmap enemyImage = BitmapFactory.decodeResource(res, R.drawable.enemy);
+    Bitmap[] enemyImageArray;
+    Matrix enemyMatrix;
 
     Bitmap explotionImage = BitmapFactory.decodeResource(res, R.drawable.explotion);
 
@@ -155,6 +158,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     int scale;
 
     //Typeface typeface;
+
 
     public MySurfaceView(Context context, int x, int y){
         super(context);
@@ -188,6 +192,17 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
         //typeface = Typeface.createFromAsset(getContext().getAssets(), "Pigmo-00_pilot.ttf");
 
+        charaImage = Bitmap.createScaledBitmap(charaImage, displayX/11, displayY/11, true);
+        enemyImage = Bitmap.createScaledBitmap(enemyImage, displayX/11, displayX/11, true);
+
+        enemyImageArray = new Bitmap[4];
+        enemyMatrix = new Matrix();
+        for(int i = 0; i < 4; i++){
+            enemyMatrix.setRotate(22.5F * (float) i, enemyImage.getWidth() / 2, enemyImage.getHeight() / 2);
+            enemyImageArray[i] = Bitmap.createBitmap(enemyImage, 0, 0, enemyImage.getWidth(), enemyImage.getHeight(), enemyMatrix, true);
+        }
+
+
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){
@@ -195,7 +210,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
     public void surfaceCreated(SurfaceHolder holder){
 
-        chara = new Chara(charaImage, displayX, displayY, displayX / 11, displayY / 11, scale);
+        chara = new Chara(charaImage, displayX, displayY, scale);
 
         charaBeam = new CharaBeam[N];
         for(int i = 0; i < N; i++){
@@ -203,6 +218,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         }
 
         isRunning = true;
+
         /*thread = new Thread(this);
         thread.start();*/
 
@@ -376,7 +392,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                     if(!hitFlag){
 
                         enemyMoveSpeed = ((score / 15) + 4) * scale;
-                        enemyIncidence = ( 60 - (score / 15) * 9) * scale;
+                        enemyIncidence = ( 60 - (score / 15) * 9);
                         if(enemyIncidence < 10){
                             enemyIncidence = 10;
                         }
@@ -445,7 +461,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         if(count % (incidence / scale) == 0){
             Random rnd = new Random();
             int ran = rnd.nextInt(displayX - (displayX / 11));
-            enemys.add(new Enemy(enemyImage, ran, 0, displayX, displayY, displayX / 11, displayX / 11, scale, moveSpeed));
+            enemys.add(new Enemy(enemyImageArray, ran, 0, displayX, displayY, scale, moveSpeed));
         }
     }
 
@@ -638,13 +654,15 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
             enemys.get(i).drawMove(canvas);
         }
 
-        for(int i = 0; i < N; i++){
-            charaBeam[i].drawMove(canvas, chara.getCenterX() - charaBeam[i].getRadius() / 2
-                    , chara.getCenterY() - (displayX / 11) / 2 + charaBeam[i].getRadius());
-        }
-
         if(!hitFlag){
+
+            for(int i = 0; i < N; i++){
+                charaBeam[i].drawMove(canvas, chara.getCenterX()
+                        , chara.getCenterY() - (displayX / 11) / 2 + charaBeam[i].getRadius());
+            }
+
             chara.drawMove(canvas);
+
         }
 
         for(int i = 0; i < explotions.size(); i++){
