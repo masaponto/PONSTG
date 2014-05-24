@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingLeft="@dimen/activity_horizontal_margin"
+              android:paddingRight="@dimen/activity_horizontal_margin"
+              android:paddingTop="@dimen/activity_vertical_margin"
+              android:paddingBottom="@dimen/activity_vertical_margin"
+              tools:context=".OverActivity"
+              android:gravity="center_vertical"
+    >>
+
+    <TextView
+        android:text="GameOver"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/title_text"
+        android:gravity="center|bottom"
+        android:textIsSelectable="false"
+        android:textSize="40sp"
+        android:layout_weight="1.3"
+        />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.8"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="SCORE:"
+            android:id="@+id/score_rabel"
+            android:layout_weight="1"
+            android:gravity="center_vertical|bottom|right"
+            android:textSize="20sp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/score"
+            android:layout_weight="1.4"
+            android:textSize="20sp"
+            android:gravity="center|bottom|left"
+            android:text="2"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.5"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="HIGHSCORE:"
+            android:id="@+id/over_highscore_label"
+            android:layout_weight="1"
+            android:gravity="center_vertical|right|top"
+            android:textSize="20sp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/over_hightscore"
+            android:layout_weight="1.4"
+            android:textSize="20sp"
+            android:gravity="center|left|top"
+            android:text="2"/>
+    </LinearLayout>
+
+    <LinearLayout
+
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.2"
+        android:gravity="center"
+        >
+
+    <ImageButton
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/over_home_button"
+        android:src="@drawable/home_button_color"
+        android:background="@null"
+        android:layout_centerVertical="true"
+        android:scaleType="fitCenter"
+        android:cropToPadding="false"
+        android:adjustViewBounds="true"
+        android:layout_weight="1"
+        android:paddingRight="5sp"/>
+
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/over_retry_Button"
+            android:src="@drawable/retry_button_color"
+            android:background="@null"
+            android:layout_centerVertical="true"
+            android:scaleType="fitCenter"
+            android:cropToPadding="false"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"
+            android:paddingLeft="2.5sp"
+            android:paddingRight="2.5sp"/>
+
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/over_twit_button"
+            android:src="@drawable/twit_button_color"
+            android:background="@null"
+            android:layout_centerVertical="true"
+            android:scaleType="fitCenter"
+            android:cropToPadding="false"
+            android:adjustViewBounds="true"
+            android:layout_weight="1"
+            android:paddingLeft="5sp"
+            android:focusableInTouchMode="true"/>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
