@@ -32,7 +32,6 @@ public class TitleActivity extends Activity{
             public void onClick(View v){
                 Intent mainIntent = new Intent(v.getContext(), MainActivity.class);
                 mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                //mainIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(mainIntent);
             }
         });

@@ -100,7 +100,6 @@ public class OverActivity extends Activity{
 
     }
 
-
     @Override
     public boolean dispatchKeyEvent(KeyEvent event){
         if(event.getAction() == KeyEvent.ACTION_DOWN){
