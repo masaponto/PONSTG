@@ -65,5 +65,7 @@ gradlew.bat
 settings.gradle
 *.iml
 
-
-/app/src/main/res/raw/*
+*.mp3
+/app/src/main/res/raw/*.mp3
+/app/src/main/res/raw/beamsound.mp3
+/app/src/main/res/raw/hitsound.mp3
