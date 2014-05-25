@@ -9,8 +9,11 @@ PON SHOOTING is a 2D shooting game for Android.
 
 ## Stuff
 - http://www.music-note.jp
-- http://icons8.com
+- http://ionicons.com/
 - http://piposozai.wiki.fc2.com
 
 ## License
-Copyright (c) 2014 masaponto
+- Copyright (c) 2014 masaponto
+- Copyright (c) 2014 Drifty (http://drifty.com/)
+Released under the MIT license
+http://opensource.org/licenses/mit-license.php
