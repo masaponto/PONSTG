@@ -157,9 +157,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     //画面の比率
     int scale;
 
-    //Typeface typeface;
-
-
     public MySurfaceView(Context context, int x, int y){
         super(context);
         mContext = context;
@@ -189,8 +186,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
         //画面の割合を横480を基準にする
         scale = displayX / 480;
-
-        //typeface = Typeface.createFromAsset(getContext().getAssets(), "Pigmo-00_pilot.ttf");
 
         charaImage = Bitmap.createScaledBitmap(charaImage, displayX/11, displayY/11, true);
         enemyImage = Bitmap.createScaledBitmap(enemyImage, displayX/11, displayX/11, true);
@@ -317,7 +312,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         switch(keyCode){
             case KeyEvent.KEYCODE_BACK:
                 pauseFlag = true;
-                // 終了していいか、ダイアログで確認
                 showDialog("Paused");
                 break;
         }
@@ -325,13 +319,10 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     }
 
     //ダイアログ
-    //public void showDialog(final Context context, String title){
     public void showDialog(String title){
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
-        //ダイアログの設定
-        //タイトル設定
         alertDialog.setTitle(title);
 
         alertDialog.setPositiveButton("Resume", new DialogInterface.OnClickListener(){
@@ -343,7 +334,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         });
 
 
-        // NG(否定的な)ボタンの設定
         alertDialog.setNegativeButton("Exit", new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialog, int which){
                 // Exitボタン押下時の処理
@@ -355,7 +345,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
             }
         });
 
-        // ダイアログの作成と描画
         alertDialog.show();
 
     }
@@ -503,8 +492,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
                 if(overTime == 0){
                     overTime = count;
                 }
-
-                //Log.d("overTime", "time" + overTime);
 
                 explotions.add(new Explotion(explotionImage, chara.getCenterX()
                         , chara.getCenterY(), count, displayX));
@@ -696,7 +683,6 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         Intent gameOver = new Intent(getContext(), OverActivity.class);
         gameOver.putExtra("score", score);
         gameOver.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        //gameOver.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         mContext.startActivity(gameOver);
 
     }
