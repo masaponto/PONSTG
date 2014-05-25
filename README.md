@@ -1,5 +1,5 @@
 # PON SHOOTING
-PON SHOOTING is a 2D shooting game of Android app.
+PON SHOOTING is a 2D shooting game for Android.
 
 ## Requires Android
 2.3.3 and up
