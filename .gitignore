@@ -66,4 +66,4 @@ settings.gradle
 *.iml
 
 
-*.mp3
+/app/src/main/res/raw/*
