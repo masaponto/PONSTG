@@ -10,7 +10,6 @@ You cab play this with easy operation.
 
 
 ## 素材
-
 音
 http://www.music-note.jp/se/bomb.html
 
