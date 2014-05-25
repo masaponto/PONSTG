@@ -1,6 +1,7 @@
 # built application files
 *.apk
 *.ap_
+!ponstg.apk
 
 # files for the dex VM
 *.dex
