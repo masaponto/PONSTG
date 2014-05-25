@@ -64,3 +64,5 @@ gradlew
 gradlew.bat
 settings.gradle
 *.iml
+
+app/src/main/res/raw/*.mp3
