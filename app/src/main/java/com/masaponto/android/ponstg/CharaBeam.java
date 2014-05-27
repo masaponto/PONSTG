@@ -27,6 +27,7 @@ class CharaBeam{
         p = new Point();
         paint = new Paint();
         paint.setColor(Color.BLACK);
+        paint.setFilterBitmap(true);
         radius = displayX / 80;
         charaBeamSpeed = 5 * scale;
     }
