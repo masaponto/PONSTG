@@ -12,7 +12,7 @@ Android Studio
 
 ## Attention about build
 If you want to build from souse code,  
-you need to prepare 2 soud file named "beamsound.mp3" and "hitsound.mp3". (not mp3 is OK.) 
+you need to prepare 2 soud file named "beamsound.mp3" and "hitsound.mp3". (not mp3 is OK.)   
 And put them under /app/res/raw/    
 
 
