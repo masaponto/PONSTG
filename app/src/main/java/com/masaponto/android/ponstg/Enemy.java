@@ -29,6 +29,7 @@ class Enemy{
         this.enemyImage = enemyImage;
         p = new Point();
         paint = new Paint();
+        paint.setFilterBitmap(true);
         p.x = w;
         p.y = h;
         this.scale = scale;

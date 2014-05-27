@@ -22,6 +22,7 @@ class Chara{
 
         p = new Point();
         paint = new Paint();
+        paint.setFilterBitmap(true);
 
         init(displayX, displayY);
     }
