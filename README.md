@@ -10,11 +10,10 @@ PON SHOOTING is a 2D shooting game for Android.
 ## ADE
 Android Studio
 
-## Attention about build
+## Attention to build
 If you want to build from souse code,  
 you need to prepare 2 soud file named "beamsound.mp3" and "hitsound.mp3". (not mp3 is OK.)   
-And put them under /app/res/raw/    
-
+And put them under /app/src/main/res/raw/    
 
 ## Stuff
 - http://www.music-note.jp
@@ -22,7 +21,7 @@ And put them under /app/res/raw/
 - http://piposozai.wiki.fc2.com
 
 ## License
-- This software is released under the MIT License.
+- This software is released under the MIT License.  
 Copyright (c) 2014 masaponto  
 http://opensource.org/licenses/mit-license.php  
       
