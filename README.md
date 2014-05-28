@@ -11,7 +11,7 @@ PON SHOOTING is a 2D shooting game for Android.
 Android Studio
 
 ## Attention to build
-If you want to build from souse code,  
+If you want to build,
 you need to prepare 2 soud files named "beamsound.mp3" and "hitsound.mp3". (not mp3 is OK.)   
 And put them under /app/src/main/res/raw/    
 
