@@ -51,6 +51,7 @@ local.properties
 *.ipr
 *.iws
 .idea/
+!.idea/runConfigurations/*
 
 .DS_Store
 
@@ -64,5 +65,6 @@ gradlew.bat
 settings.gradle
 *.iml
 
+# sound file
 *.mp3
 
