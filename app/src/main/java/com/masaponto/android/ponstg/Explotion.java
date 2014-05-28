@@ -8,6 +8,7 @@ import android.graphics.Rect;
 class Explotion{
 
     private Bitmap explotionImage;
+    private Paint paint;
 
     public int exSwitch = 0;
 
@@ -22,6 +23,8 @@ class Explotion{
     Explotion(Bitmap explotionImage, int X, int Y, int count, int displayX){
         this.explotionImage = explotionImage;
         this.displayX = displayX;
+        paint = new Paint();
+        paint.setFilterBitmap(true);
 
         int h = explotionImage.getHeight();
         int w = explotionImage.getWidth() / 10;
@@ -37,7 +40,7 @@ class Explotion{
     }
 
     public void drawMove(Canvas c){
-        c.drawBitmap(explotionImage, srcs[exSwitch], dst, new Paint());
+        c.drawBitmap(explotionImage, srcs[exSwitch], dst, paint);
     }
 
 }

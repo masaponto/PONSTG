@@ -22,6 +22,7 @@ class EnemyBeam{
         p.y = h;
 
         paint = new Paint();
+        paint.setFilterBitmap(true);
         paint.setColor(Color.rgb(196,15,24));
 
         angle = Math.atan2(charaY - h, charaX - w);

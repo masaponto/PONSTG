@@ -353,6 +353,7 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     public void run(){
 
         Paint mPaint = new Paint();
+        mPaint.setFilterBitmap(true);
 
         count = 50 * scale;
         overTime = 0;
