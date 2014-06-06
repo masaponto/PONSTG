@@ -157,6 +157,12 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
     //画面の比率
     int scale;
 
+    static final long FPS = 60;
+    static final long FRAME_TIME = 1000 / FPS;
+
+
+
+
     public MySurfaceView(Context context, int x, int y){
         super(context);
         mContext = context;
@@ -358,6 +364,10 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
         count = 50 * scale;
         overTime = 0;
 
+        long loopCount = 0;
+        long waitTime = 0;
+        long startTime = System.currentTimeMillis();
+
         int enemyMoveSpeed, enemyIncidence;
         int enemyBeamMoveSpeed, enemyBeamIncidence;
 
@@ -427,13 +437,23 @@ class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback, Runna
 
             }
 
+            waitTime = (loopCount * FRAME_TIME) - (System.currentTimeMillis() - startTime);
+
+            try{
+                if(waitTime > 0){
+                    Thread.sleep(waitTime);
+                }
+            }
+            catch (Exception e) {
+            }
+
         }
 
 
-        try{
-            Thread.sleep(10);//お決まり
+        /*try{
+            Thread.sleep(10);
         }catch(Exception e){
-        }
+        }*/
 
     }
 
