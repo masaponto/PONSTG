@@ -5,27 +5,24 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 
-
-
 class CharaBeam{
 
-    private Point p;
     private int beamCenterX;
     private int beamCenterY;
+
+    private Point p;
     private Paint paint;
 
     public boolean CharaBeamFlag = false;
     public boolean isDead = true;
 
-    private int scale;
     private int charaBeamSpeed;
-    private int radius, displayX;
+    private int radius;
 
     CharaBeam(int displayX, int scale){
-        this.displayX = displayX;
-        this.scale = scale;
         p = new Point();
         paint = new Paint();
+
         paint.setColor(Color.BLACK);
         paint.setFilterBitmap(true);
         radius = displayX / 80;
@@ -66,6 +63,5 @@ class CharaBeam{
     public int getRadius(){
         return radius;
     }
-
 
 }
